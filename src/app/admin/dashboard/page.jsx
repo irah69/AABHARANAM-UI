@@ -42,8 +42,12 @@ export default function AdminDashboard() {
       <div className="min-h-screen w-full bg-white text-black flex flex-col items-center">
         <div className="w-full max-w-7xl px-4 py-10">
           <AnalyticsDashboard />
-          <AdminHeading title="Admin Dashboard" subtitle="Overview of key metrics and contact messages" />
-          <div className="mt-16 mb-16 flex justify-center gap-6">
+         {/*  <AdminHeading title="Admin Dashboard" subtitle="Overview of key metrics and contact messages" />
+ */}
+
+          <div className="mt-20 border border-gray-200 rounded-lg p-5">
+
+             <div className="mt-16 mb-16 flex justify-center gap-10">
             <Button asChild variant="outline" className="px-6 py-3 text-base font-semibold">
               {/* Use Next.js Link for client-side navigation */}
               <Link href="/admin/products">Manage products</Link>
@@ -57,8 +61,6 @@ export default function AdminDashboard() {
               <Link href="/admin/users">View users</Link>
             </Button>
           </div>
-
-          <div className="mt-20 border border-gray-200 rounded-lg p-5">
             <div className="flex items-center justify-between gap-4 mb-3">
               <h2 className="text-lg font-semibold">Backend dashboard (live)</h2>
               <button

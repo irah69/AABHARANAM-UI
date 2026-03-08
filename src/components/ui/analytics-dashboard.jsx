@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { apiRequest } from '@/lib/apiClient';
 import { LineChart, Line, Tooltip, ResponsiveContainer } from 'recharts';
 import { DollarSign, Users, CreditCard, Activity } from 'lucide-react';
-
+import AdminHeading from "@/components/ui/AdminHeading";
 // --- MOCK DATA ---
 // --- DATA FETCHING ---
 const icons = {
@@ -138,21 +138,7 @@ function StatCard({ title, value, change, changeType, icon, chartData }) {
 export default function AnalyticsDashboard() {
   return (
     <div className="w-full max-w-7xl mx-auto font-playfair bg-white text-black">
-      <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-black/10 gap-2">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black font-playfair">
-            Dashboard
-          </h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Welcome back! Here&apos;s your performance summary.
-          </p>
-        </div>
-        <button
-          className="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-white"
-        >
-          Generate Report
-        </button>
-      </header>
+   <AdminHeading title="Admin Dashboard" subtitle="Overview of key metrics and contact messages" />
 
       <main className="mt-8">
         <SalesStatsGrid />
@@ -164,14 +150,23 @@ export default function AnalyticsDashboard() {
 // --- SALES STATS GRID ---
 function SalesStatsGrid() {
   const { data, loading, error } = useSalesStats();
-  if (loading) return <div>Loading sales stats…</div>;
-  if (error) return <div className="text-red-600">Failed to load sales stats.</div>;
-  if (!data.length) return <div>No sales stats available.</div>;
+
+  if (loading) return <div className="text-center py-6 text-gray-500">Loading sales stats…</div>;
+  if (error) return <div className="text-center py-6 text-red-600">Failed to load sales stats.</div>;
+  if (!data.length) return <div className="text-center py-6 text-gray-400">No sales stats available.</div>;
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center place-items-center mx-auto max-w-3xl">
-      {data.map((stat) => (
-        <StatCard key={stat.title} {...stat} />
-      ))}
+    <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 justify-center place-items-stretch">
+        {data.map((stat) => (
+          <div
+            key={stat.title}
+            className="bg-white shadow rounded-lg p-6 flex flex-col justify-center items-center text-center h-56"
+          >
+            <StatCard {...stat} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

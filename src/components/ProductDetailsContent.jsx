@@ -127,53 +127,19 @@ export default function ProductDetailsContent({ product }) {
             ))}
           </div>
 
-          {/* Additional Info */}
-          <div className="product-info-banner">
-            <div className="info-item">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M9 11l3 3L22 4"></path>
-                <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <div>
-                <p className="info-title">Return within 14 days</p>
-                <p className="info-subtitle">100% original guarantee</p>
-              </div>
-            </div>
-            <div className="info-item">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
-              </svg>
-              <div>
-                <p className="info-title">Free shipping</p>
-                <p className="info-subtitle">On orders above ₹999</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* RIGHT SECTION - DETAILS */}
         <div className="product-details-right">
           {/* Product Header */}
           <div className="product-header">
-            <span className="product-badge">Featured</span>
+            <span className="text-black">Featured</span>
             <h1 className="product-title">{product.name}</h1>
             <p className="product-seller">by {product.category?.name || "Store"}</p>
           </div>
 
           {/* Rating Section */}
-          <div className="rating-section">
+{/*           <div className="rating-section">
             <div className="rating-box">
               <span className="rating-value">{averageRating}</span>
               <div className="stars">
@@ -192,20 +158,22 @@ export default function ProductDetailsContent({ product }) {
               </div>
             </div>
             <p className="rating-count">{totalReviews.toLocaleString()} reviews</p>
-          </div>
+          </div> */}
 
           {/* Price & Discount Section */}
-          <div className="price-section">
-            <div className="price-container">
-              <span className="current-price">₹{product.price.toLocaleString()}</span>
-              <span className="original-price">₹{originalPrice.toLocaleString()}</span>
-              <span className="discount-badge">{discountPercent}% OFF</span>
-            </div>
-            <p className="inclusive-price">inclusive of all taxes</p>
-          </div>
+<div className=" bg-white text-black p-4 rounded-lg shadow-md ">
+  <div className="price-container  flex items-center gap-3 mb-2">
+    <span className="current-price text-2xl text-black font-bold">₹{product.price.toLocaleString()}</span>
+    <span className="original-price line-through text-gray-500">₹{originalPrice.toLocaleString()}</span>
+    <span className="discount-badge bg-black text-white text-xs font-semibold px-2 py-1 rounded">
+      {discountPercent}% OFF
+    </span>
+  </div>
+  <p className="inclusive-price text-sm text-gray-700">inclusive of all taxes</p>
+</div>
 
           {/* Offers Section */}
-          <div className="offers-section">
+         {/*  <div className="offers-section">
             <h3 className="section-title">Available Offers</h3>
             <div className="offer-item">
               <span className="offer-icon">🎁</span>
@@ -232,9 +200,9 @@ export default function ProductDetailsContent({ product }) {
               </div>
             </div>
           </div>
-
+ */}
           {/* Stock & Delivery */}
-          <div className="delivery-section">
+{/*           <div className="delivery-section">
             <div className="stock-info">
               <p className={`stock-text ${product.stockQuantity > 0 ? "in-stock" : "out-of-stock"}`}>
                 {product.stockQuantity > 0 ? "✓ In Stock" : "✗ Out of Stock"}
@@ -268,7 +236,7 @@ export default function ProductDetailsContent({ product }) {
                 <p className="delivery-detail">12 PM - 4 PM (Next delivery)</p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Quantity & Actions */}
           <div className="quantity-actions">
@@ -295,7 +263,7 @@ export default function ProductDetailsContent({ product }) {
 
             <div className="action-buttons">
               <AddToCartButton productId={product.id} />
-              <button className="btn-buy-now">Buy Now</button>
+             {/*  <button className="btn-buy-now">Buy Now</button> */}
             </div>
           </div>
 
@@ -331,93 +299,7 @@ export default function ProductDetailsContent({ product }) {
       </div>
 
       {/* REVIEWS SECTION */}
-      <div className="reviews-container">
-        <h2 className="reviews-heading">Customer Reviews ({totalReviews.toLocaleString()})</h2>
 
-        <div className="reviews-wrapper">
-          {/* Review Summary */}
-          <div className="review-summary">
-            <div className="summary-content">
-              <div className="summary-rating">
-                <div className="big-rating">{averageRating}</div>
-                <div className="summary-stars">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className={`star ${i < Math.floor(averageRating) ? "filled" : ""}`}
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                    </svg>
-                  ))}
-                </div>
-                <p className="summary-subtext">Based on {totalReviews.toLocaleString()} reviews</p>
-              </div>
-
-              <div className="rating-distribution">
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <div key={star} className="distribution-row">
-                    <span className="distribution-label">{star} ★</span>
-                    <div className="distribution-bar">
-                      <div className="distribution-fill" style={{ width: `${star === 5 ? 65 : star === 4 ? 25 : star === 3 ? 8 : star === 2 ? 1 : 1}%` }}></div>
-                    </div>
-                    <span className="distribution-count">{Math.floor(totalReviews * (star === 5 ? 0.65 : star === 4 ? 0.25 : star === 3 ? 0.08 : 0.01))}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Individual Reviews */}
-          <div className="reviews-list">
-            <div className="reviews-filter">
-              <button className="filter-btn active">All</button>
-              <button className="filter-btn">5 ★</button>
-              <button className="filter-btn">4 ★</button>
-              <button className="filter-btn">3 ★</button>
-              <button className="filter-btn">With images</button>
-            </div>
-
-            {reviews.map((review) => (
-              <div key={review.id} className="review-card">
-                <div className="review-header">
-                  <div className="review-author">
-                    <div className="author-avatar">{review.author.charAt(0)}</div>
-                    <div>
-                      <p className="author-name">{review.author}</p>
-                      <p className="review-date">{review.date}</p>
-                    </div>
-                  </div>
-                  <div className="review-rating">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        className={`star ${i < review.rating ? "filled" : ""}`}
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                      </svg>
-                    ))}
-                  </div>
-                </div>
-                <div className="review-content">
-                  <h4 className="review-title">{review.title}</h4>
-                  <p className="review-text">{review.text}</p>
-                </div>
-                <div className="review-footer">
-                  <button className="helpful-btn">👍 Helpful ({review.helpful})</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
