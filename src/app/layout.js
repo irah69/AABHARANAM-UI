@@ -33,14 +33,18 @@ export default function RootLayout({ children }) {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
       </head>
-      <body className="pt-20">
+
+      <body>
         <LoaderWrapper />
         <Providers>
           <Header1 />
-          <main className="min-h-screen">{children}</main>
+          <main className="min-h-screen pt-[120px]">
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>
+
     </html>
   );
 }

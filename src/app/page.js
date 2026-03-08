@@ -1,32 +1,40 @@
-import React from 'react';
 import PerspectivesSection from '@/components/PerspectivesSection';
 import Hero from '@/components/Hero';
 import FeaturedProducts from '@/components/FeaturedProducts';
 
-// SEO Metadata for Home Page
+// SEO Metadata
 export const metadata = {
-  title: 'Murgan Store - Premium Women\'s Fashion & Dresses',
-  description: 'Discover amazing women\'s dresses and apparel. Shop premium quality products with unbeatable prices and fast, free shipping on orders over ₹50.',
-  keywords: 'women dresses, fashion, dress store, online shopping',
-  openGraph: {
-    title: 'Murgan Store - Premium Women\'s Fashion & Dresses',
-    description: 'Shop premium quality women\'s dresses with unbeatable prices',
-    type: 'website',
-    url: 'https://yourshop.com',
-    image: 'https://yourshop.com/og-image.png',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Murgan Store - Premium Women\'s Fashion & Dresses',
-    description: 'Shop premium quality women\'s dresses with unbeatable prices',
-  },
+  title: "Murgan Store - Premium Women's Fashion & Dresses",
+  description:
+    "Discover amazing women's dresses and apparel. Shop premium quality products with unbeatable prices and fast, free shipping on orders over ₹50.",
+  keywords: "women dresses, fashion, dress store, online shopping",
 };
 
-export default function Home() {
+async function getFeaturedProducts() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/products`,
+      {
+        cache: "no-store", // always fetch fresh data
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const products = await getFeaturedProducts();
+
   return (
     <>
-      {/* Hero Carousel */}
-      {/* <FeaturedCarousel /> */}
       <Hero />
 
       {/* Collections Grid */}
@@ -41,13 +49,12 @@ export default function Home() {
           </div>
           <ProductGrid products={featuredProducts} loading={loading} />
           <div className="text-center mt-10 md:mt-16">
-      //       {/* Use Next.js Link for client-side navigation */}
-      //       <Link href="/products" className="btn-secondary-pedestal">
-      //         View All Products
-      //       </Link>
-      //     </div>
-      //   </div>
-      // </section> */}
+            <a href="/products" className="btn-secondary-pedestal">
+              View All Products
+            </a>
+          </div>
+        </div>
+      </section> */}
       <FeaturedProducts/>
 
       {/* Studio/Configuration Section */}
