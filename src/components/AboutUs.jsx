@@ -1,407 +1,508 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import {
-  Pen, PaintBucket, Home, Ruler, PenTool, Building2, Award, Users, Calendar, CheckCircle, Sparkles, Star, ArrowRight, Zap, TrendingUp
+  Building2,
+  Award,
+  Users,
+  Zap,
+  TrendingUp,
+  Phone,
+  Mail,
+  MapPin,
+  Heart,
+  Lightbulb,
+  Shield,
+  Globe,
+  ArrowRight,
 } from "lucide-react";
-import { motion, useScroll, useTransform, useInView, useSpring } from "framer-motion";
-import "../styles/custom.css";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import "../styles/about-page.css";
 
 export default function AboutUs() {
-  const [isVisible, setIsVisible] = useState(false);
-  const sectionRef = useRef(null);
+  const [imageUrl, setImageUrl] = useState(
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop"
+  );
+  const containerRef = useRef(null);
+  const heroRef = useRef(null);
+  const valuesRef = useRef(null);
+  const teamRef = useRef(null);
   const statsRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
-  const isStatsInView = useInView(statsRef, { once: false, amount: 0.3 });
+  const ctaRef = useRef(null);
 
-  // Parallax effect for decorative elements
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
+    target: containerRef,
+    offset: ["start start", "end end"],
   });
 
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, 50]);
-  const rotate1 = useTransform(scrollYProgress, [0, 1], [0, 20]);
-  const rotate2 = useTransform(scrollYProgress, [0, 1], [0, -20]);
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 50]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0.8]);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  const heroInView = useInView(heroRef, { once: false, amount: 0.3 });
+  const valuesInView = useInView(valuesRef, { once: false, amount: 0.2 });
+  const teamInView = useInView(teamRef, { once: false, amount: 0.2 });
+  const statsInView = useInView(statsRef, { once: false, amount: 0.3 });
+  const ctaInView = useInView(ctaRef, { once: false, amount: 0.3 });
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3,
+        staggerChildren: 0.15,
+        delayChildren: 0.2,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.7, ease: "easeOut" },
     },
   };
 
-  const services = [
+  const slideInLeft = {
+    hidden: { x: -60, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  const slideInRight = {
+    hidden: { x: 60, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  const scaleIn = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+  };
+
+  const values = [
     {
-      icon: <Pen className="w-6 h-6" />,
-      secondaryIcon: <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
-      title: "Interior",
-      description:
-        "Transform your living spaces with our expert interior design services. We blend functionality and aesthetics to create spaces that reflect your unique style and personality.",
-      position: "left",
+      icon: <Heart className="w-8 h-8" />,
+      title: "Quality",
+      description: "We deliver premium products crafted with meticulous attention to detail",
     },
     {
-      icon: <Home className="w-6 h-6" />,
-      secondaryIcon: <CheckCircle className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
-      title: "Exterior",
-      description:
-        "Make a lasting impression with stunning exterior designs that enhance curb appeal and create harmonious connections between architecture and landscape.",
-      position: "left",
+      icon: <Lightbulb className="w-8 h-8" />,
+      title: "Innovation",
+      description: "Constantly evolving our collections with latest trends and designs",
     },
     {
-      icon: <PenTool className="w-6 h-6" />,
-      secondaryIcon: <Star className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
-      title: "Design",
-      description:
-        "Our innovative design process combines creativity with practicality, resulting in spaces that are both beautiful and functional for everyday living.",
-      position: "left",
+      icon: <Shield className="w-8 h-8" />,
+      title: "Trust",
+      description: "Building lasting relationships through transparency and reliability",
     },
     {
-      icon: <PaintBucket className="w-6 h-6" />,
-      secondaryIcon: <Sparkles className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
-      title: "Decoration",
-      description:
-        "Elevate your space with our curated decoration services. From color schemes to textiles and accessories, we perfect every detail to bring your vision to life.",
-      position: "right",
+      icon: <Globe className="w-8 h-8" />,
+      title: "Sustainability",
+      description: "Committed to ethical practices and sustainable sourcing",
+    },
+  ];
+
+  const teamMembers = [
+    {
+      name: "Sarah Johnson",
+      role: "Creative Director",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop",
     },
     {
-      icon: <Ruler className="w-6 h-6" />,
-      secondaryIcon: <CheckCircle className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
-      title: "Planning",
-      description:
-        "Our meticulous planning process ensures every project runs smoothly from concept to completion, with careful attention to timelines, budgets, and requirements.",
-      position: "right",
+      name: "Michael Chen",
+      role: "Operations Manager",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
     },
     {
-      icon: <Building2 className="w-6 h-6" />,
-      secondaryIcon: <Star className="w-4 h-4 absolute -top-1 -right-1 text-[#A9BBC8]" />,
-      title: "Execution",
-      description:
-        "Watch your dream space come to life through our flawless execution. Our skilled team handles every aspect of implementation with precision and care.",
-      position: "right",
+      name: "Emma Williams",
+      role: "Lead Designer",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop",
+    },
+    {
+      name: "Alex Patel",
+      role: "Customer Success",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop",
     },
   ];
 
   const stats = [
-    { icon: <Award />, value: 150, label: "Projects Completed", suffix: "+" },
-    { icon: <Users />, value: 1200, label: "Happy Clients", suffix: "+" },
-    { icon: <Calendar />, value: 12, label: "Years Experience", suffix: "" },
-    { icon: <TrendingUp />, value: 98, label: "Satisfaction Rate", suffix: "%" },
+    { number: "15+", label: "Years in Fashion" },
+    { number: "50K+", label: "Happy Customers" },
+    { number: "200+", label: "Premium Collections" },
+    { number: "100+", label: "Cities Served" },
   ];
 
   return (
-    <section
-      id="about-section"
-      ref={sectionRef}
-      className="w-full py-24 px-4 bg-gradient-to-b from-[#F2F2EB] to-[#F8F8F2] text-[#202e44] overflow-hidden relative"
-    >
-      {/* Decorative background elements */}
-      <motion.div
-        className="absolute top-20 left-10 w-64 h-64 rounded-full bg-[#88734C]/5 blur-3xl"
-        style={{ y: y1, rotate: rotate1 }}
-      />
-      <motion.div
-        className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-[#A9BBC8]/5 blur-3xl"
-        style={{ y: y2, rotate: rotate2 }}
-      />
-      <motion.div
-        className="absolute top-1/2 left-1/4 w-4 h-4 rounded-full bg-[#88734C]/30"
-        animate={{ y: [0, -15, 0], opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-1/3 right-1/4 w-6 h-6 rounded-full bg-[#A9BBC8]/30"
-        animate={{ y: [0, 20, 0], opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1 }}
-      />
-
-      <motion.div
-        className="container mx-auto max-w-6xl relative z-10"
+    <div ref={containerRef} className="about-container">
+      {/* Hero Section */}
+      <motion.section
+        ref={heroRef}
+        className="hero-section"
+        style={{ y: heroY, opacity: heroOpacity }}
         initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
+        animate={heroInView ? "visible" : "hidden"}
         variants={containerVariants}
       >
-        <motion.div className="flex flex-col items-center mb-6 font-playfair" variants={itemVariants}>
-          <motion.span
-            className="text-[#88734C] font-medium mb-2 flex items-center gap-2"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <Zap className="w-4 h-4" />
-            EXPLORE OUR COLLECTION
-          </motion.span>
-          <h2 className="text-4xl md:text-5xl font-light mb-4 text-center text-black font-playfair">About Us</h2>
+        <div className="hero-content-wrapper">
+          {/* Left Block - Company Info */}
           <motion.div
-            className="w-24 h-1 bg-black"
-            initial={{ width: 0 }}
-            animate={{ width: 96 }}
-            transition={{ duration: 1, delay: 0.5 }}
-          ></motion.div>
-        </motion.div>
-
-        <motion.p className="text-center max-w-2xl mx-auto mb-16 text-black/80 font-playfair" variants={itemVariants}>
-          Welcome to MURGAN Wardrobe! We are passionate about helping you discover the perfect dress for every occasion. Our curated collection features elegant, trendy, and timeless wardrobe pieces designed to inspire confidence and style. With a focus on quality, fit, and customer satisfaction, we make shopping for dresses a delightful experience.
-        </motion.p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          {/* Left Column */}
-          <div className="space-y-16">
-            {services
-              .filter((service) => service.position === "left")
-              .map((service, index) => (
-                <ServiceItem
-                  key={`left-${index}`}
-                  icon={service.icon}
-                  secondaryIcon={service.secondaryIcon}
-                  title={service.title}
-                  description={service.description}
-                  variants={itemVariants}
-                  delay={index * 0.2}
-                  direction="left"
-                />
-              ))}
-          </div>
-
-          {/* Center Image */}
-          <div className="flex justify-center items-center order-first md:order-none mb-8 md:mb-0">
-            <motion.div className="relative w-full max-w-xs" variants={itemVariants}>
+            className="hero-left"
+            variants={slideInLeft}
+          >
+            <motion.div
+              className="company-header"
+              variants={itemVariants}
+            >
+              <h1 className="company-name">MURGAN</h1>
               <motion.div
-                className="rounded-md overflow-hidden shadow-xl"
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
+                className="accent-line"
+                initial={{ width: 0 }}
+                animate={heroInView ? { width: "60px" } : { width: 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
-                whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
+              />
+            </motion.div>
+
+            <motion.p
+              className="company-tagline"
+              variants={itemVariants}
+            >
+              Wardrobe Essentials Reimagined
+            </motion.p>
+
+            <motion.p
+              className="company-description"
+              variants={itemVariants}
+            >
+              Welcome to Murgan Wardrobe, where elegance meets accessibility. Since our establishment, we've been on a mission to transform how you dress, feel, and express yourself. We believe that everyone deserves to wear confidence.
+            </motion.p>
+
+            <motion.div
+              className="contact-info"
+              variants={containerVariants}
+            >
+              <motion.div
+                className="contact-item"
+                variants={itemVariants}
+                whileHover={{ x: 10 }}
+              >
+                <Phone className="contact-icon" />
+                <div>
+                  <h4>Call Us</h4>
+                  <p>+1 (555) 123-4567</p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="contact-item"
+                variants={itemVariants}
+                whileHover={{ x: 10 }}
+              >
+                <Mail className="contact-icon" />
+                <div>
+                  <h4>Email</h4>
+                  <p>hello@Murgan.com</p>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="contact-item"
+                variants={itemVariants}
+                whileHover={{ x: 10 }}
+              >
+                <MapPin className="contact-icon" />
+                <div>
+                  <h4>Location</h4>
+                  <p>New York, NY 10001</p>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            <motion.button
+              className="cta-button"
+              variants={itemVariants}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)",
+              }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Explore Collections
+              <ArrowRight className="button-icon" />
+            </motion.button>
+          </motion.div>
+
+          {/* Right Block - Circle Image */}
+          <motion.div
+            className="hero-right"
+            variants={slideInRight}
+          >
+            <motion.div
+              className="image-circle-container"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.div
+                className="circle-image-wrapper"
+                animate={{ y: [0, -20, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1747582411588-f9b4acabe995?q=80&w=3027&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Modern House"
-                  className="w-full h-full object-cover"
+                  src={imageUrl}
+                  alt="Murgan Wardrobe"
+                  className="circle-image"
                 />
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-[#202e44]/50 to-transparent flex items-end justify-center p-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.9 }}
-                >
-                  <motion.button
-                    className="bg-white text-[#202e44] px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Our Portfolio <ArrowRight className="w-4 h-4" />
-                  </motion.button>
-                </motion.div>
+              </motion.div>
+
+              {/* Animated Background Elements */}
+              <motion.div
+                className="animated-circle circle-1"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, linear: true }}
+              />
+              <motion.div
+                className="animated-circle circle-2"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 25, repeat: Infinity, linear: true }}
+              />
+
+              {/* Floating Elements */}
+              <motion.div
+                className="floating-element element-1"
+                animate={{ y: [0, -30, 0], x: [0, 15, 0] }}
+                transition={{ duration: 5, repeat: Infinity }}
+              >
+                <Heart className="w-6 h-6" />
               </motion.div>
               <motion.div
-                className="absolute inset-0 border-4 border-[#A9BBC8] rounded-md -m-3 z-[-1]"
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-              ></motion.div>
-
-              {/* Floating accent elements */}
+                className="floating-element element-2"
+                animate={{ y: [0, 30, 0], x: [0, -15, 0] }}
+                transition={{ duration: 6, repeat: Infinity, delay: 1 }}
+              >
+                <Zap className="w-6 h-6" />
+              </motion.div>
               <motion.div
-                className="absolute -top-4 -right-8 w-16 h-16 rounded-full bg-[#88734C]/10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.9 }}
-                style={{ y: y1 }}
-              ></motion.div>
-              <motion.div
-                className="absolute -bottom-6 -left-10 w-20 h-20 rounded-full bg-[#A9BBC8]/15"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 1.1 }}
-                style={{ y: y2 }}
-              ></motion.div>
-
-              {/* Additional decorative elements */}
-              <motion.div
-                className="absolute -top-10 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-[#88734C]"
-                animate={{ y: [0, -10, 0], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-              ></motion.div>
-              <motion.div
-                className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[#A9BBC8]"
-                animate={{ y: [0, 10, 0], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 0.5 }}
-              ></motion.div>
+                className="floating-element element-3"
+                animate={{ y: [0, -25, 0] }}
+                transition={{ duration: 7, repeat: Infinity, delay: 2 }}
+              >
+                <Lightbulb className="w-6 h-6" />
+              </motion.div>
             </motion.div>
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-16">
-            {services
-              .filter((service) => service.position === "right")
-              .map((service, index) => (
-                <ServiceItem
-                  key={`right-${index}`}
-                  icon={service.icon}
-                  secondaryIcon={service.secondaryIcon}
-                  title={service.title}
-                  description={service.description}
-                  variants={itemVariants}
-                  delay={index * 0.2}
-                  direction="right"
-                />
-              ))}
-          </div>
+          </motion.div>
         </div>
+      </motion.section>
 
-        {/* Stats Section */}
+      {/* Values Section */}
+      <motion.section
+        ref={valuesRef}
+        className="values-section"
+        initial="hidden"
+        animate={valuesInView ? "visible" : "hidden"}
+        variants={containerVariants}
+      >
+        <motion.div className="section-header" variants={itemVariants}>
+          <h2>Our Core Values</h2>
+          <p>What drives us every single day</p>
+        </motion.div>
+
         <motion.div
-          ref={statsRef}
-          className="mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-          initial="hidden"
-          animate={isStatsInView ? "visible" : "hidden"}
+          className="values-grid"
           variants={containerVariants}
         >
-          {stats.map((stat, index) => (
-            <StatCounter
+          {values.map((value, index) => (
+            <motion.div
               key={index}
-              icon={stat.icon}
-              value={stat.value}
-              label={stat.label}
-              suffix={stat.suffix}
-              delay={index * 0.1}
-            />
+              className="value-card"
+              variants={scaleIn}
+              whileHover={{
+                y: -10,
+                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="value-icon"
+                whileHover={{ rotate: 360, scale: 1.1 }}
+                transition={{ duration: 0.6 }}
+              >
+                {value.icon}
+              </motion.div>
+              <h3>{value.title}</h3>
+              <p>{value.description}</p>
+            </motion.div>
           ))}
         </motion.div>
+      </motion.section>
 
-        {/* CTA Section */}
-        <motion.div
-          className="mt-20 bg-[#202e44] text-white p-8 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isStatsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-        >
-{/*           <div className="flex-1">
-            <h3 className="text-2xl font-medium mb-2">Ready to transform your space?</h3>
-            <p className="text-white/80">Let's create something beautiful together.</p>
-          </div>
+      {/* Stats Section */}
+      <motion.section
+        ref={statsRef}
+        className="stats-section"
+        initial="hidden"
+        animate={statsInView ? "visible" : "hidden"}
+        variants={containerVariants}
+      >
+        <div className="stats-background" />
+        <motion.div className="section-header" variants={itemVariants}>
+          <h2>By The Numbers</h2>
+          <p>Growing together with our community</p>
+        </motion.div>
+
+        <motion.div className="stats-grid" variants={containerVariants}>
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              className="stat-card"
+              variants={itemVariants}
+              whileHover={{ scale: 1.08 }}
+            >
+              <motion.div
+                className="stat-number"
+                initial={{ opacity: 0, y: 20 }}
+                animate={statsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                {stat.number}
+              </motion.div>
+              <div className="stat-label">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
+
+      {/* Team Section */}
+      <motion.section
+        ref={teamRef}
+        className="team-section"
+        initial="hidden"
+        animate={teamInView ? "visible" : "hidden"}
+        variants={containerVariants}
+      >
+        <motion.div className="section-header" variants={itemVariants}>
+          <h2>Meet Our Team</h2>
+          <p>Talented individuals behind your favorite collections</p>
+        </motion.div>
+
+        <motion.div className="team-grid" variants={containerVariants}>
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={index}
+              className="team-card"
+              variants={scaleIn}
+              whileHover={{ y: -15 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="team-image-wrapper"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <img src={member.image} alt={member.name} className="team-image" />
+                <motion.div
+                  className="image-overlay"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                >
+                  <Zap className="w-8 h-8" />
+                </motion.div>
+              </motion.div>
+              <h3>{member.name}</h3>
+              <p>{member.role}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
+
+      {/* Timeline Section */}
+      <motion.section
+        className="timeline-section"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: false, amount: 0.2 }}
+        variants={containerVariants}
+      >
+        <motion.div className="section-header" variants={itemVariants}>
+          <h2>Our Journey</h2>
+          <p>From passion to profession</p>
+        </motion.div>
+
+        <motion.div className="timeline" variants={containerVariants}>
+          {[
+            { year: "2009", title: "Founded", desc: "Murgan Wardrobe was born with a simple vision" },
+            { year: "2012", title: "First Store", desc: "Opened our flagship store in New York" },
+            { year: "2016", title: "Online Launch", desc: "Expanded to digital marketplace" },
+            { year: "2020", title: "Global Reach", desc: "Now serving customers in 100+ cities" },
+            { year: "2024", title: "Innovation Hub", desc: "Launched AI-powered personal styling" },
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              className="timeline-item"
+              variants={itemVariants}
+            >
+              <motion.div
+                className="timeline-dot"
+                whileHover={{ scale: 1.3 }}
+                whileTap={{ scale: 0.9 }}
+              />
+              <div className="timeline-content">
+                <h4>{item.year}</h4>
+                <h5>{item.title}</h5>
+                <p>{item.desc}</p>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </motion.section>
+
+      {/* CTA Section */}
+      <motion.section
+        ref={ctaRef}
+        className="cta-section"
+        initial="hidden"
+        animate={ctaInView ? "visible" : "hidden"}
+        variants={containerVariants}
+      >
+        <motion.div className="cta-content" variants={itemVariants}>
+          <h2>Ready to Discover Your Style?</h2>
+          <p>
+            Join thousands of fashion enthusiasts who've transformed their wardrobe with Murgan
+          </p>
           <motion.button
-            className="bg-[#88734C] hover:bg-[#88734C]/90 text-white px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-colors"
-            whileHover={{ scale: 1.05 }}
+            className="cta-button-large"
+            whileHover={{
+              scale: 1.08,
+              boxShadow: "0 30px 60px rgba(0, 0, 0, 0.2)",
+            }}
             whileTap={{ scale: 0.95 }}
           >
-            Get Started <ArrowRight className="w-4 h-4" />
-          </motion.button> */}
+            Start Shopping Now
+            <ArrowRight className="w-5 h-5" />
+          </motion.button>
         </motion.div>
-      </motion.div>
-    </section>
-  );
-}
 
-function ServiceItem({ icon, secondaryIcon, title, description, variants, delay, direction }) {
-  return (
-    <motion.div
-      className="flex flex-col group"
-      variants={variants}
-      transition={{ delay }}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
-    >
-      <motion.div
-        className="flex items-center gap-3 mb-3"
-        initial={{ x: direction === "left" ? -20 : 20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: delay + 0.2 }}
-      >
+        {/* Animated Background Elements */}
         <motion.div
-          className="text-[#88734C] bg-[#88734C]/10 p-3 rounded-lg transition-colors duration-300 group-hover:bg-[#88734C]/20 relative"
-          whileHover={{ rotate: [0, -10, 10, -5, 0], transition: { duration: 0.5 } }}
-        >
-          {icon}
-          {secondaryIcon}
-        </motion.div>
-        <h3 className="text-xl font-medium text-[#202e44] group-hover:text-[#88734C] transition-colors duration-300">
-          {title}
-        </h3>
-      </motion.div>
-      <motion.p
-        className="text-sm text-[#202e44]/80 leading-relaxed pl-12"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, delay: delay + 0.4 }}
-      >
-        {description}
-      </motion.p>
-      <motion.div
-        className="mt-3 pl-12 flex items-center text-[#88734C] text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0 }}
-      >
-        <span className="flex items-center gap-1">
-          Learn more <ArrowRight className="w-3 h-3" />
-        </span>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-function StatCounter({ icon, value, label, suffix, delay }) {
-  const countRef = useRef(null);
-  const isInView = useInView(countRef, { once: false });
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const springValue = useSpring(0, {
-    stiffness: 50,
-    damping: 10,
-  });
-
-  useEffect(() => {
-    if (isInView && !hasAnimated) {
-      springValue.set(value);
-      setHasAnimated(true);
-    } else if (!isInView && hasAnimated) {
-      springValue.set(0);
-      setHasAnimated(false);
-    }
-  }, [isInView, value, springValue, hasAnimated]);
-
-  const displayValue = useTransform(springValue, (latest) => Math.floor(latest));
-
-  return (
-    <motion.div
-      className="bg-white/50 backdrop-blur-sm p-6 rounded-xl flex flex-col items-center text-center group hover:bg-white transition-colors duration-300"
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.6, delay },
-        },
-      }}
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
-    >
-      <motion.div
-        className="w-14 h-14 rounded-full bg-[#202e44]/5 flex items-center justify-center mb-4 text-[#88734C] group-hover:bg-[#88734C]/10 transition-colors duration-300"
-        whileHover={{ rotate: 360, transition: { duration: 0.8 } }}
-      >
-        {icon}
-      </motion.div>
-      <motion.div ref={countRef} className="text-3xl font-bold text-[#202e44] flex items-center">
-        <motion.span>{displayValue}</motion.span>
-        <span>{suffix}</span>
-      </motion.div>
-      <p className="text-[#202e44]/70 text-sm mt-1">{label}</p>
-      <motion.div className="w-10 h-0.5 bg-[#88734C] mt-3 group-hover:w-16 transition-all duration-300" />
-    </motion.div>
+          className="cta-bg-element element-1"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 30, repeat: Infinity, linear: true }}
+        />
+        <motion.div
+          className="cta-bg-element element-2"
+          animate={{ rotate: -360 }}
+          transition={{ duration: 40, repeat: Infinity, linear: true }}
+        />
+      </motion.section>
+    </div>
   );
 }

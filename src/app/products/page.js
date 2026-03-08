@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sliders, X, ChevronDown } from "lucide-react";
 import ProductGrid from "@/components/ProductGrid";
 import CapsuleHero from "@/components/CapsuleHero";
+import FilterModal from "@/components/FilterModal";
 import { useQuery } from "@tanstack/react-query";
 import { publicApi } from "@/lib/apiClient";
 import { normalizePage } from "@/lib/pagination";
@@ -19,12 +22,13 @@ function useDebouncedValue(value, delayMs) {
 export default function ProductsPage() {
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(12);
-  const [sort, setSort] = useState("createdAt,desc"); // price|name|createdAt
+  const [sort, setSort] = useState("createdAt,desc");
   const [categoryId, setCategoryId] = useState("");
   const [q, setQ] = useState("");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [inStock, setInStock] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const debouncedQ = useDebouncedValue(q, 300);
 
@@ -84,131 +88,70 @@ export default function ProductsPage() {
       <CapsuleHero />
 
       <div className="container-custom py-8">
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col md:flex-row gap-3 md:items-end">
-            <div className="flex-1">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Search</label>
-              <input
-                value={q}
-                onChange={(e) => {
-                  setQ(e.target.value);
-                  setPage(0);
-                }}
-                placeholder="Search products..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-black transition"
-              />
-            </div>
-
-            <div className="min-w-[220px]">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Category</label>
-              <select
-                value={categoryId}
-                onChange={(e) => {
-                  setCategoryId(e.target.value);
-                  setPage(0);
-                }}
-                className="w-full px-3 py-3 border border-gray-300 rounded-lg bg-white"
-              >
-                <option value="">All categories</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="min-w-[220px]">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Sort</label>
-              <select
-                value={sort}
-                onChange={(e) => {
-                  setSort(e.target.value);
-                  setPage(0);
-                }}
-                className="w-full px-3 py-3 border border-gray-300 rounded-lg bg-white"
-              >
-                <option value="createdAt,desc">Newest</option>
-                <option value="createdAt,asc">Oldest</option>
-                <option value="price,asc">Price: Low → High</option>
-                <option value="price,desc">Price: High → Low</option>
-                <option value="name,asc">Name: A → Z</option>
-                <option value="name,desc">Name: Z → A</option>
-              </select>
-            </div>
+        {/* Header Section with Search, Sort, and Filter Button */}
+        <motion.div 
+          className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          {/* Search Bar */}
+          <div className="flex-1 w-full">
+            <label className="block text-xs font-semibold text-gray-700 mb-2">Search</label>
+            <input
+              value={q}
+              onChange={(e) => {
+                setQ(e.target.value);
+                setPage(0);
+              }}
+              placeholder="Search products..."
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#d4a574] transition-all"
+            />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Min price</label>
-              <input
-                value={minPrice}
-                onChange={(e) => {
-                  setMinPrice(e.target.value);
-                  setPage(0);
-                }}
-                inputMode="decimal"
-                placeholder="0"
-                className="w-full px-3 py-3 border border-gray-300 rounded-lg"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Max price</label>
-              <input
-                value={maxPrice}
-                onChange={(e) => {
-                  setMaxPrice(e.target.value);
-                  setPage(0);
-                }}
-                inputMode="decimal"
-                placeholder="9999"
-                className="w-full px-3 py-3 border border-gray-300 rounded-lg"
-              />
-            </div>
-            <div className="flex items-center gap-2 py-3">
-              <input
-                id="inStock"
-                type="checkbox"
-                checked={inStock}
-                onChange={(e) => {
-                  setInStock(e.target.checked);
-                  setPage(0);
-                }}
-              />
-              <label htmlFor="inStock" className="text-sm text-gray-700">
-                In stock only
-              </label>
-            </div>
-            <div className="flex items-center gap-2 justify-end">
-              <select
-                value={size}
-                onChange={(e) => {
-                  setSize(Number(e.target.value));
-                  setPage(0);
-                }}
-                className="px-3 py-3 border border-gray-300 rounded-lg bg-white"
-              >
-                <option value={12}>12 / page</option>
-                <option value={24}>24 / page</option>
-                <option value={48}>48 / page</option>
-              </select>
-              <button
-                onClick={() => {
-                  setCategoryId("");
-                  setQ("");
-                  setMinPrice("");
-                  setMaxPrice("");
-                  setInStock(false);
-                  setSort("createdAt,desc");
-                  setPage(0);
-                }}
-                className="px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
-              >
-                Clear
-              </button>
-            </div>
+          {/* Controls */}
+          <div className="flex gap-3 w-full md:w-auto">
+            {/* Sort Dropdown */}
+            <motion.select
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value);
+                setPage(0);
+              }}
+              className="min-w-[180px] px-3 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#d4a574] transition-all bg-white font-medium text-gray-700"
+              whileHover={{ borderColor: '#d4a574' }}
+            >
+              <option value="createdAt,desc">Newest</option>
+              <option value="createdAt,asc">Oldest</option>
+              <option value="price,asc">Price: Low → High</option>
+              <option value="price,desc">Price: High → Low</option>
+              <option value="name,asc">Name: A → Z</option>
+              <option value="name,desc">Name: Z → A</option>
+            </motion.select>
+
+            {/* Filter Button */}
+            <motion.button
+              onClick={() => setIsFilterOpen(true)}
+              className="relative flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-[#d4a574] to-[#e8b4a8] text-white rounded-lg font-semibold transition-all hover:shadow-lg"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Sliders size={20} />
+              <span className="hidden sm:inline">Filters</span>
+              
+              {/* Badge for active filters */}
+              {(categoryId || minPrice || maxPrice || inStock) && (
+                <motion.span
+                  className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                >
+                  {[categoryId && 1, minPrice && 1, maxPrice && 1, inStock && 1].filter(Boolean).length}
+                </motion.span>
+              )}
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Status */}
         {productsQuery.isError && (
@@ -245,6 +188,28 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
+
+      {/* Filter Modal Popup */}
+      <FilterModal 
+        isOpen={isFilterOpen} 
+        onClose={() => setIsFilterOpen(false)}
+        categoryId={categoryId}
+        onCategoryChange={setCategoryId}
+        minPrice={minPrice}
+        onMinPriceChange={setMinPrice}
+        maxPrice={maxPrice}
+        onMaxPriceChange={setMaxPrice}
+        inStock={inStock}
+        onInStockChange={setInStock}
+        categories={categories}
+        onClearFilters={() => {
+          setCategoryId("");
+          setMinPrice("");
+          setMaxPrice("");
+          setInStock(false);
+          setPage(0);
+        }}
+      />
     </>
   );
 }

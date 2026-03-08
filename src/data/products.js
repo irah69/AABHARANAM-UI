@@ -80,3 +80,24 @@ export const ratingFilters = [
   { label: '★★★☆☆ 3 Stars & up', value: 3 },
   { label: '★★☆☆☆ 2 Stars & up', value: 2 },
 ];
+
+// Sizes
+export const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+// Colors
+export const colors = [
+  { name: 'Black', hex: '#000000' },
+  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Red', hex: '#FF0000' },
+  { name: 'Blue', hex: '#0000FF' },
+  { name: 'Yellow', hex: '#FFFF00' },
+  { name: 'Green', hex: '#008000' },
+  { name: 'Pink', hex: '#FFC0CB' },
+  { name: 'Purple', hex: '#800080' },
+];
+
+// Fabrics
+export const fabrics = ['Cotton', 'Silk', 'Linen', 'Polyester', 'Wool', 'Denim', 'Chiffon'];
+
+// Occasions
+export const occasions = ['Casual', 'Party', 'Wedding', 'Office', 'Festive', 'Beach', 'Sports'];
