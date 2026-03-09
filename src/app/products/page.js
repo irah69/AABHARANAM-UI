@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sliders, X, ChevronDown } from "lucide-react";
+import { Sliders, X, ChevronDown, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 import ProductGrid from "@/components/ProductGrid";
-import CapsuleHero from "@/components/CapsuleHero";
+import { ProductsMinimalistHero } from "@/components/ui/products-minimalist-hero";
 import FilterModal from "@/components/FilterModal";
 import { useQuery } from "@tanstack/react-query";
 import { publicApi } from "@/lib/apiClient";
@@ -85,7 +85,29 @@ export default function ProductsPage() {
   return (
     <>
       {/* ================= HERO ================= */}
-      <CapsuleHero />
+      <ProductsMinimalistHero
+        logoText="mnmlst."
+        navLinks={[
+          { label: 'HOME', href: '/' },
+          { label: 'PRODUCTS', href: '/products' },
+          { label: 'ABOUT US', href: '/about' },
+          { label: 'CONTACT', href: '/contact' },
+        ]}
+        mainText="Discover our curated collection of premium minimalist products. Each item is carefully selected for quality, design, and timeless appeal."
+        imageSrc="https://ik.imagekit.io/fpxbgsota/image%2013.png?updatedAt=1753531863793"
+        imageAlt="Minimalist fashion collection showcase"
+        overlayText={{
+          part1: 'Quality',
+          part2: 'Curated.',
+        }}
+        socialLinks={[
+          { icon: Facebook, href: '#' },
+          { icon: Instagram, href: '#' },
+          { icon: Twitter, href: '#' },
+          { icon: Linkedin, href: '#' },
+        ]}
+        locationText="Worldwide Shipping Available"
+      />
 
       <div className="container-custom py-8">
         {/* Header Section with Search, Sort, and Filter Button */}

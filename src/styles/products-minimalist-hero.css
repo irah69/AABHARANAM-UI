@@ -1,0 +1,422 @@
+/* ==========================================
+   PRODUCTS MINIMALIST HERO - PREMIUM STYLING
+   ========================================== */
+
+:root {
+  --primary: #202e44;
+  --secondary: #d4a574;
+  --accent: #e8b4a8;
+  --text-dark: #202e44;
+  --text-light: #666;
+  --border-color: #e0e0e0;
+  --bg-hover: #f5f5f5;
+}
+
+/* ==========================================
+   CONTAINER & LAYOUT
+   ========================================== */
+
+.products-hero-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #19191a 0%, #222223 50%, #272727 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated Background Gradient */
+.products-hero-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(227, 224, 221, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(229, 226, 225, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ==========================================
+   MAIN HERO CONTENT
+   ========================================== */
+
+.products-hero-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  align-items: center;
+  justify-items: center;
+  padding: 40px 40px;
+  position: relative;
+  z-index: 10;
+}
+
+/* ==========================================
+   LEFT CONTENT SECTION
+   ========================================== */
+
+.products-hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  justify-content: center;
+}
+
+.products-hero-description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  max-width: 90%;
+}
+
+/* ==========================================
+   CTA BUTTON
+   ========================================== */
+
+.products-hero-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: fit-content;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #e5e2de, #e9e5e4);
+  color: rgb(15, 15, 15);
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(212, 165, 116, 0.3);
+}
+
+.products-hero-cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+}
+
+.products-hero-cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(237, 236, 235, 0.4);
+}
+
+.products-hero-cta-btn:hover::before {
+  animation: shimmer 0.6s ease-in-out forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.products-hero-cta-btn:active {
+  transform: translateY(-1px);
+}
+
+/* ==========================================
+   RIGHT CONTENT - IMAGE SECTION
+   ========================================== */
+
+.products-hero-right {
+  position: relative;
+  height: 100%;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.products-hero-circle-bg {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d4a574, #e8b4a8);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.9;
+  filter: blur(0px);
+  z-index: 1;
+}
+
+.products-hero-circle-bg::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(32, 46, 68, 0.9), rgba(26, 35, 50, 0.95));
+  z-index: -1;
+}
+
+.products-hero-image {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: brightness(1.1) contrast(1.05);
+}
+
+/* ==========================================
+   OVERLAY TEXT
+   ========================================== */
+
+.products-hero-overlay-text {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  z-index: 3;
+  line-height: 1;
+}
+
+.overlay-line {
+  font-size: 4.5rem;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -2px;
+  font-family: 'Playfair Display', serif;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.overlay-line-1 {
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.overlay-line-2 {
+  background: linear-gradient(90deg, #d4a574, #e8b4a8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ==========================================
+   FOOTER SECTION
+   ========================================== */
+
+.products-hero-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 40px;
+  border-top: 1px solid rgba(212, 165, 116, 0.1);
+  background: rgba(32, 46, 68, 0.5);
+  position: relative;
+  z-index: 10;
+}
+
+/* ==========================================
+   SOCIAL LINKS
+   ========================================== */
+
+.products-hero-socials {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(212, 165, 116, 0.1);
+  border: 2px solid rgba(212, 165, 116, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.social-link:hover {
+  background: rgba(212, 165, 116, 0.2);
+  border-color: #d4a574;
+  color: #d4a574;
+  transform: translateY(-3px);
+}
+
+/* ==========================================
+   LOCATION TEXT
+   ========================================== */
+
+.products-hero-location {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+@media (max-width: 1024px) {
+  .products-hero-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 40px 30px;
+  }
+
+  .products-hero-right {
+    min-height: 400px;
+  }
+
+  .products-hero-circle-bg {
+    width: 350px;
+    height: 350px;
+  }
+
+  .overlay-line {
+    font-size: 3.5rem;
+  }
+
+  .products-hero-overlay-text {
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .products-hero-container {
+    min-height: auto;
+  }
+
+  .products-hero-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 30px 24px;
+  }
+
+  .products-hero-left {
+    gap: 24px;
+    justify-content: flex-start;
+  }
+
+  .products-hero-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 100%;
+  }
+
+  .products-hero-right {
+    min-height: 350px;
+    margin-bottom: 30px;
+  }
+
+  .products-hero-circle-bg {
+    width: 280px;
+    height: 280px;
+  }
+
+  .overlay-line {
+    font-size: 2.5rem;
+  }
+
+  .products-hero-overlay-text {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    margin-top: 20px;
+  }
+
+  .products-hero-footer {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px 24px;
+  }
+
+  .products-hero-socials {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-hero-content {
+    padding: 20px 16px;
+  }
+
+  .products-hero-description {
+    font-size: 0.95rem;
+  }
+
+  .products-hero-circle-bg {
+    width: 220px;
+    height: 220px;
+  }
+
+  .overlay-line {
+    font-size: 1.8rem;
+  }
+
+  .products-hero-cta-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+
+  .products-hero-cta-btn span {
+    display: none;
+  }
+
+  .products-hero-socials {
+    gap: 12px;
+  }
+
+  .social-link {
+    width: 36px;
+    height: 36px;
+  }
+
+  .products-hero-location {
+    font-size: 0.8rem;
+  }
+}
+
+/* ==========================================
+   ANIMATIONS
+   ========================================== */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(212, 165, 116, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(212, 165, 116, 0.6);
+  }
+}
+
+.products-hero-image {
+  animation: float 6s ease-in-out infinite;
+}
