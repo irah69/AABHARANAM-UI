@@ -88,8 +88,8 @@ export default function ProductsPage() {
       <ProductsMinimalistHero
         logoText="mnmlst."
         
-        mainText="Discover our curated collection of premium minimalist products. Each item is carefully selected for quality, design, and timeless appeal."
-        imageSrc="https://ik.imagekit.io/fpxbgsota/image%2013.png?updatedAt=1753531863793"
+        mainText="Explore our handpicked collection of exquisite sarees — from timeless silks to vibrant banarasi weaves. Each piece is crafted to celebrate the elegance and grace of every woman."
+        imageSrc="./image.png"
         imageAlt="Minimalist fashion collection showcase"
         overlayText={{
           part1: 'Quality',
@@ -99,7 +99,7 @@ export default function ProductsPage() {
         locationText="Worldwide Shipping Available"
       />
 
-      <div className="container-custom py-8">
+    
         {/* Header Section with Search, Sort, and Filter Button */}
         <motion.div 
           className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8"
@@ -199,8 +199,6 @@ export default function ProductsPage() {
             </button>
           </div>
         )}
-      </div>
-
       {/* Filter Modal Popup */}
       <FilterModal 
         isOpen={isFilterOpen} 
