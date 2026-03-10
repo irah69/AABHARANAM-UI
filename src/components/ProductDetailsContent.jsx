@@ -36,13 +36,12 @@ export default function ProductDetailsContent({ product }) {
     return d;
   }, []);
 
-  // Mock images array - using main image with variations
-  const images = [
-    product.imageUrl,
-    product.imageUrl,
-    product.imageUrl,
-    product.imageUrl,
-  ];
+  // Support multiple image URLs separated by comma
+  const images = Array.isArray(product.imageUrls)
+    ? product.imageUrls
+    : typeof product.imageUrl === "string"
+      ? product.imageUrl.split(",").map(url => url.trim()).filter(Boolean)
+      : [];
 
   // Mock reviews data
   const reviews = [

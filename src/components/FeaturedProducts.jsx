@@ -24,27 +24,37 @@ export default function FeaturedProducts({ products }) {
         </div>
 
         <div className="featured-item large">
-          <img src="/saree.png" alt="Product" />
+          <Link href="/products">
+            <img src="/saree.png" alt="Product" className="cursor-pointer" />
+          </Link>
           <span>MODERN FORM</span>
         </div>
 
         <div className="featured-item">
-          <img src="/saree.png" alt="Product" />
+          <Link href="/products">
+            <img src="/saree.png" alt="Product" className="cursor-pointer" />
+          </Link>
           <span>ESSENTIAL SILHOUETTE</span>
         </div>
 
         <div className="featured-item">
-          <img src="/saree.png" alt="Product" />
+          <Link href="/products">
+            <img src="/saree.png" alt="Product" className="cursor-pointer" />
+          </Link>
           <span>TIMELESS WEAR</span>
         </div>
 
         <div className="featured-item">
-          <img src="/saree.png" alt="Product" />
+          <Link href="/products">
+            <img src="/saree.png" alt="Product" className="cursor-pointer" />
+          </Link>
           <span>MINIMAL STATEMENT</span>
         </div>
 
         <div className="featured-item">
-          <img src="/saree.png" alt="Product" />
+          <Link href="/products">
+            <img src="/saree.png" alt="Product" className="cursor-pointer" />
+          </Link>
           <span>ELEGANT GRACE</span>
         </div>
       </div>

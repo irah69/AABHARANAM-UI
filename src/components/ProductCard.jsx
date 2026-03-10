@@ -12,7 +12,10 @@ export default function ProductCard({ product }) {
   const { addToCart } = useCart();
 
   const stock = product.stockQuantity ?? product.stock ?? 0;
-  const imageSrc = product.imageUrl ||'/saree.png';
+  // Use only the first image URL if multiple are provided, separated by commas
+  const imageSrc = product.imageUrl
+    ? product.imageUrl.split(',')[0].trim()
+    : '/saree.png';
   const categoryName = product.category?.name || product.categoryName || product.category || '';
   const originalPrice = product.originalPrice;
   const discount =
@@ -31,7 +34,7 @@ export default function ProductCard({ product }) {
       {/* Image Container */}
       <Link href={`/products/${product.id}`} className="pg-product-card-image-wrapper relative overflow-hidden bg-[#f5f5f5] h-64 flex items-center justify-center group">
         <img
-          src={product.image}
+          src={imageSrc}
           alt={product.name}
           className="pg-product-card-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />

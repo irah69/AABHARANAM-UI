@@ -163,8 +163,14 @@ return (
 
                   const product = it.product || {};
                   const name = product.name || `Product #${it.productId}`;
-                  const image =
-                    product.imageUrl || product.image || "/saree.png";
+                    let image = '';
+                    if (Array.isArray(product.imageUrls) && product.imageUrls.length > 0) {
+                      image = product.imageUrls[0];
+                    } else if (typeof product.imageUrl === 'string' && product.imageUrl.includes(',')) {
+                      image = product.imageUrl.split(',')[0].trim();
+                    } else {
+                      image = product.imageUrl || product.image;
+                    }
                   const price = it.unitPrice ?? 0;
                   const qty = it.quantity ?? 0;
 

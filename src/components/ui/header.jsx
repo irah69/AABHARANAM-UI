@@ -228,7 +228,7 @@ function Header1() {
                     )}
 
                     {isAuthenticated && (
-                        <Link href="/orders">
+                        <Link href={isAdmin ? "/adminorder" : "/orders"}>
                             <Button className="font-bold text-black !bg-white/30 backdrop-blur-md border border-white/40 hover:!bg-white/40 shadow-lg rounded-full">
                                 Orders
                             </Button>
@@ -300,7 +300,7 @@ function Header1() {
                                 </Link>
                                 {isAuthenticated ? (
                                     <>
-                                        <Link href="/orders" onClick={() => setOpen(false)}>
+                                        <Link href={isAdmin ? "/adminorder" : "/orders"} onClick={() => setOpen(false)}>
                                             <Button className="w-full font-bold text-black !bg-white/30 backdrop-blur-md border border-white/40 hover:!bg-white/40 shadow-lg rounded-full">
                                                 Orders
                                             </Button>
