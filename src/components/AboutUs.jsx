@@ -113,28 +113,7 @@ export default function AboutUs() {
     },
   ];
 
-  const teamMembers = [
-    {
-      name: "Sarah Johnson",
-      role: "Creative Director",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop",
-    },
-    {
-      name: "Michael Chen",
-      role: "Operations Manager",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop",
-    },
-    {
-      name: "Emma Williams",
-      role: "Lead Designer",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop",
-    },
-    {
-      name: "Alex Patel",
-      role: "Customer Success",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop",
-    },
-  ];
+
 
   const stats = [
     { number: "15+", label: "Years in Fashion" },
@@ -258,7 +237,7 @@ export default function AboutUs() {
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
                 <img
-                  src={imageUrl}
+                  src="./logo1.png"
                   alt="Murgan Wardrobe"
                   className="circle-image"
                 />
@@ -382,47 +361,7 @@ export default function AboutUs() {
       </motion.section>
 
       {/* Team Section */}
-      <motion.section
-        ref={teamRef}
-        className="team-section"
-        initial="hidden"
-        animate={teamInView ? "visible" : "hidden"}
-        variants={containerVariants}
-      >
-        <motion.div className="section-header" variants={itemVariants}>
-          <h2>Meet Our Team</h2>
-          <p>Talented individuals behind your favorite collections</p>
-        </motion.div>
-
-        <motion.div className="team-grid" variants={containerVariants}>
-          {teamMembers.map((member, index) => (
-            <motion.div
-              key={index}
-              className="team-card"
-              variants={scaleIn}
-              whileHover={{ y: -15 }}
-              transition={{ duration: 0.3 }}
-            >
-              <motion.div
-                className="team-image-wrapper"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.3 }}
-              >
-                <img src={member.image} alt={member.name} className="team-image" />
-                <motion.div
-                  className="image-overlay"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                >
-                  <Zap className="w-8 h-8" />
-                </motion.div>
-              </motion.div>
-              <h3>{member.name}</h3>
-              <p>{member.role}</p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
+     
 
       {/* Timeline Section */}
       <motion.section
