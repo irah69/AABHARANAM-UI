@@ -191,7 +191,7 @@ return ( <section className="py-28 px-6">
                 const productId = item.productId ?? product.id;
                 const qty = item.quantity ?? 0;
                 const imageSrc =
-                  product.imageUrl || product.image || "/saree.png";
+                  product.imageUrlS || product.image || "/saree.png";
                 const name = product.name || `Product #${productId}`;
                 const price = product.price ?? 0;
                 const lineTotal = price * qty;
