@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import { publicApi } from "@/lib/apiClient";
 import ProductDetailsContent from "@/components/ProductDetailsContent";
