@@ -38,23 +38,7 @@ const ContactUs = () => {
         We'd love to hear from you! Reach out to us for any questions, feedback, or support.
       </p>
       <form className="flex flex-col gap-5" onSubmit={handleSubmit} noValidate>
-        <input
-          type="text"
-          placeholder="Your Name"
-          className="border border-black rounded px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black transition-shadow shadow-sm hover:shadow-md"
-          required
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="Your Email"
-          className="border border-black rounded px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black transition-shadow shadow-sm hover:shadow-md"
-          required
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <div className="flex gap-8 justify-center">
+                <div className="flex gap-8 justify-center">
           <label className="flex items-center space-x-2 cursor-pointer text-black font-semibold">
             <input
               type="radio"
@@ -78,6 +62,23 @@ const ContactUs = () => {
             <span>Bulk Orders</span>
           </label>
         </div>
+        <input
+          type="text"
+          placeholder="Your Name"
+          className="border border-black rounded px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black transition-shadow shadow-sm hover:shadow-md"
+          required
+          value={name}
+          onChange={e => setName(e.target.value)}
+        />
+        <input
+          type="email"
+          placeholder="Your Email"
+          className="border border-black rounded px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black transition-shadow shadow-sm hover:shadow-md"
+          required
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+
         <textarea
           placeholder="Your Message"
           rows={5}
