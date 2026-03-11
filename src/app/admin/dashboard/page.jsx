@@ -24,7 +24,7 @@ export default function AdminDashboard() {
     queryKey: ["adminContactUs"],
     enabled: Boolean(accessToken),
     queryFn: async ({ signal }) => {
-      const res = await fetch("http://localhost:8080/api/admin/contactus", {
+      const res = await fetch("https://murgan-backend-1.onrender.com/api/admin/contactus", {
         method: "GET",
         headers: {
           "Authorization": `Bearer ${accessToken}`,

@@ -20,7 +20,7 @@ function useSalesStats() {
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem('murgan_access_token');
-    fetch('http://localhost:8080/api/admin/sales', {
+    fetch('https://murgan-backend-1.onrender.com/api/admin/sales', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
