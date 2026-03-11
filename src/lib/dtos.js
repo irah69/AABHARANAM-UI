@@ -12,7 +12,7 @@
  * @property {string} [description]
  * @property {number} price
  * @property {number} [stockQuantity]
- * @property {string} [imageUrlS]
+ * @property {string} [imageUrls]
  * @property {number} [categoryId]
  * @property {CategoryDto} [category]
  * @property {string} [createdAt]

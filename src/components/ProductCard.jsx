@@ -13,8 +13,8 @@ export default function ProductCard({ product }) {
 
   const stock = product.stockQuantity ?? product.stock ?? 0;
   // Use only the first image URL if multiple are provided, separated by commas
-  const imageSrc = product.imageUrlS
-    ? product.imageUrlS.split(',')[0].trim()
+  const imageSrc = product.imageUrls
+    ? product.imageUrls.split(',')[0].trim()
     : '/saree2.png';
   const categoryName = product.category?.name || product.categoryName || product.category || '';
   const originalPrice = product.originalPrice;
