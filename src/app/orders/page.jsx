@@ -177,17 +177,17 @@ export default function OrdersPage() {
                       let image = "";
 
                       if (
-                        Array.isArray(product.imageUrlss) &&
-                        product.imageUrlss.length > 0
+                        Array.isArray(product.imageUrlSs) &&
+                        product.imageUrlSs.length > 0
                       ) {
-                        image = product.imageUrlss[0];
+                        image = product.imageUrlSs[0];
                       } else if (
-                        typeof product.imageUrls === "string" &&
-                        product.imageUrls.includes(",")
+                        typeof product.imageUrlS === "string" &&
+                        product.imageUrlS.includes(",")
                       ) {
-                        image = product.imageUrls.split(",")[0].trim();
+                        image = product.imageUrlS.split(",")[0].trim();
                       } else {
-                        image = product.imageUrls || product.image;
+                        image = product.imageUrlS || product.image;
                       }
 
                       const price = it.unitPrice ?? 0;
