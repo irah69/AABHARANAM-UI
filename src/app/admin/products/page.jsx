@@ -72,11 +72,13 @@ export default function AdminProductsPage() {
     e.preventDefault();
     setError("");
 
-    // convert comma-separated string into array
-    const imageUrlsArray = form.imageUrls
-      .split(",")
-      .map((url) => url.trim())
-      .filter((url) => url.length > 0);
+    // Safe conversion: string or array to array
+    const imageUrlsArray = Array.isArray(form.imageUrls)
+      ? form.imageUrls
+      : form.imageUrls
+          .split(",")
+          .map((url) => url.trim())
+          .filter((url) => url.length > 0);
 
     const payload = {
       name: form.name,
@@ -285,10 +287,10 @@ export default function AdminProductsPage() {
                               description: p.description || "",
                               price: String(p.price ?? ""),
                               stockQuantity: String(p.stockQuantity ?? ""),
-                              imageUrls: (p.imageUrls || []).join(", "),
-                              categoryId: String(
-                                p.categoryId ?? p.category?.id ?? ""
-                              ),
+                              imageUrls: Array.isArray(p.imageUrls)
+                                ? p.imageUrls.join(", ")
+                                : (typeof p.imageUrls === "string" ? p.imageUrls : ""),
+                              categoryId: String(p.categoryId ?? p.category?.id ?? ""),
                             });
                           }}
                           className="underline"
