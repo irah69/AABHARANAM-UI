@@ -32,6 +32,11 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
+        <!-- Preload productssaree.png image -->
+<link rel="preload" as="image" href="/path/to/productssaree.png" />
+
+<!-- Preload signin.mp4 video -->
+<link rel="preload" as="video" href="/path/to/signin.mp4" type="video/mp4" />
       </head>
 
       <body>
