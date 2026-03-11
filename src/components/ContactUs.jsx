@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
 
-// ...existing code...
-
 const ContactUs = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,16 +32,16 @@ const ContactUs = () => {
   };
 
   return (
-    <section className="bg-black contact-us-section p-8 bg-white rounded shadow-md max-w-2xl mx-auto mt-10">
-      <h1 className="text-3xl font-bold mb-4 text-center">Contact Us</h1>
-      <p className="text-lg text-gray-700 mb-6 text-center">
-        We&apos;d love to hear from you! Reach out to us for any questions, feedback, or support.
+    <section className="max-w-xl mx-auto mt-12 p-6">
+      <h1 className="text-4xl font-extrabold text-black mb-6 text-center">Contact Us</h1>
+      <p className="text-center text-gray-700 mb-8">
+        We'd love to hear from you! Reach out to us for any questions, feedback, or support.
       </p>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-5" onSubmit={handleSubmit} noValidate>
         <input
           type="text"
           placeholder="Your Name"
-          className="border p-2 rounded"
+          className="border border-black rounded px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black transition-shadow shadow-sm hover:shadow-md"
           required
           value={name}
           onChange={e => setName(e.target.value)}
@@ -51,52 +49,55 @@ const ContactUs = () => {
         <input
           type="email"
           placeholder="Your Email"
-          className="border p-2 rounded"
+          className="border border-black rounded px-4 py-3 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black transition-shadow shadow-sm hover:shadow-md"
           required
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
-        <div className="flex gap-4">
-          <label className="flex items-center">
+        <div className="flex gap-8 justify-center">
+          <label className="flex items-center space-x-2 cursor-pointer text-black font-semibold">
             <input
               type="radio"
               name="queryType"
               value="general"
               checked={queryType === "general"}
               onChange={() => setQueryType("general")}
+              className="accent-black"
             />
-            <span className="ml-2">General Query</span>
+            <span>General Query</span>
           </label>
-          <label className="flex items-center">
+          <label className="flex items-center space-x-2 cursor-pointer text-black font-semibold">
             <input
               type="radio"
               name="queryType"
               value="bulk"
               checked={queryType === "bulk"}
               onChange={() => setQueryType("bulk")}
+              className="accent-black"
             />
-            <span className="ml-2">Bulk Orders</span>
+            <span>Bulk Orders</span>
           </label>
         </div>
         <textarea
           placeholder="Your Message"
-          className="border p-2 rounded"
-          rows={4}
+          rows={5}
+          className="border border-black rounded px-4 py-3 text-black placeholder-gray-500 resize-y focus:outline-none focus:ring-2 focus:ring-black transition-shadow shadow-sm hover:shadow-md"
           required
           value={message}
           onChange={e => setMessage(e.target.value)}
         />
         <button
           type="submit"
-          className="bg-black text-white font-bold py-2 px-4 rounded hover:bg-gray-800"
+          className="bg-white text-black font-bold py-3 rounded border-2 border-black hover:bg-black hover:text-white transition-colors shadow-sm hover:shadow-lg"
         >
           Send Message
         </button>
-        {status && <div className="text-center text-sm mt-2">{status}</div>}
+        {status && (
+          <div className="text-center text-sm mt-4 text-black font-medium">{status}</div>
+        )}
       </form>
     </section>
   );
 };
-
 
 export default ContactUs;
