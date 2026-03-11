@@ -21,7 +21,7 @@ export async function apiRequest(path, options = {}) {
     headers = {},
   } = options;
 
-  const baseUrl = "https://murgan-backend-1.onrender.comapi";
+  const baseUrl = "https://murgan-backend-1.onrender.com/api";
 
   if (!baseUrl) {
     throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined in .env.local");
