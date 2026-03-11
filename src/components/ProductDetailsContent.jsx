@@ -37,10 +37,10 @@ export default function ProductDetailsContent({ product }) {
   }, []);
 
   // Support multiple image URLs separated by comma
-  const images = Array.isArray(product.imageUrlSs)
-    ? product.imageUrlSs
-    : typeof product.imageUrlS === "string"
-      ? product.imageUrlS.split(",").map(url => url.trim()).filter(Boolean)
+  const images = Array.isArray(product.imageUrls)
+    ? product.imageUrls
+    : typeof product.imageUrl === "string"
+      ? product.imageUrl.split(",").map(url => url.trim()).filter(Boolean)
       : [];
 
   // Mock reviews data
