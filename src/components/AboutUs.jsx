@@ -19,7 +19,7 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import "../styles/about-page.css";
 
 export default function AboutUs() {
-  const [imageUrl, setImageUrl] = useState(
+  const [imageUrls, setimageUrls] = useState(
     "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop"
   );
   const containerRef = useRef(null);
