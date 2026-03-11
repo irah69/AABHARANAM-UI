@@ -181,11 +181,10 @@ export default function OrdersPage() {
                         product.imageUrlss.length > 0
                       ) {
                         image = product.imageUrlss[0];
-                      } else if (
-                        typeof product.imageUrls === "string" &&
-                        product.imageUrls.includes(",")
-                      ) {
-                        image = product.imageUrls.split(",")[0].trim();
+                      } else if (Array.isArray(product.imageUrls)) {
+                        image = product.imageUrls[0];
+                      } else if (typeof product.imageUrls === "string" && product.imageUrls.includes(",")) {
+                        image = product.imageUrls.split(",").map(url => url.trim()).filter(url => url.length > 0)[0];
                       } else {
                         image = product.imageUrls || product.image;
                       }

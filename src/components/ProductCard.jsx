@@ -13,9 +13,11 @@ export default function ProductCard({ product }) {
 
   const stock = product.stockQuantity ?? product.stock ?? 0;
   // Use only the first image URL if multiple are provided, separated by commas
-  const imageSrc = product.imageUrls
-    ? product.imageUrls.split(',')[0].trim()
-    : '/saree2.png';
+  const imageSrc = Array.isArray(product.imageUrls)
+    ? product.imageUrls[0]
+    : (typeof product.imageUrls === 'string'
+      ? product.imageUrls.split(',').map(url => url.trim()).filter(url => url.length > 0)[0]
+      : '/saree2.png');
   const categoryName = product.category?.name || product.categoryName || product.category || '';
   const originalPrice = product.originalPrice;
   const discount =
