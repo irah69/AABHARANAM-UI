@@ -20,7 +20,7 @@ export default function AdminProductsPage() {
     description: "",
     price: "",
     stockQuantity: "",
-    imageUrls: "",
+    imageUrl: "",
     categoryId: "",
   });
   const [error, setError] = useState("");
@@ -70,7 +70,7 @@ export default function AdminProductsPage() {
       description: form.description,
       price: Number(form.price),
       stockQuantity: Number(form.stockQuantity),
-      imageUrls: form.imageUrls,
+      imageUrl: form.imageUrl,
       categoryId: Number(form.categoryId),
     };
 
@@ -79,7 +79,7 @@ export default function AdminProductsPage() {
       else await createMutation.mutateAsync(payload);
 
       setEditingId(null);
-      setForm({ name: "", description: "", price: "", stockQuantity: "", imageUrls: "", categoryId: "" });
+      setForm({ name: "", description: "", price: "", stockQuantity: "", imageUrl: "", categoryId: "" });
     } catch (err) {
       setError(err?.message || "Failed to save product.");
     }
@@ -145,8 +145,8 @@ export default function AdminProductsPage() {
             <div className="md:col-span-2">
               <label className="block text-sm font-semibold mb-1">Image URL</label>
               <input
-                value={form.imageUrls}
-                onChange={(e) => setForm((f) => ({ ...f, imageUrls: e.target.value }))}
+                value={form.imageUrl}
+                onChange={(e) => setForm((f) => ({ ...f, imageUrl: e.target.value }))}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg"
               />
             </div>
@@ -174,7 +174,7 @@ export default function AdminProductsPage() {
                 type="button"
                 onClick={() => {
                   setEditingId(null);
-                  setForm({ name: "", description: "", price: "", stockQuantity: "", imageUrls: "", categoryId: "" });
+                  setForm({ name: "", description: "", price: "", stockQuantity: "", imageUrl: "", categoryId: "" });
                 }}
                 className="px-5 py-3 border border-gray-300 rounded-lg"
               >
@@ -223,7 +223,7 @@ export default function AdminProductsPage() {
                               description: p.description || "",
                               price: String(p.price ?? ""),
                               stockQuantity: String(p.stockQuantity ?? ""),
-                              imageUrls: p.imageUrls || "",
+                              imageUrl: p.imageUrl || "",
                               categoryId: String(p.categoryId ?? p.category?.id ?? ""),
                             });
                           }}
