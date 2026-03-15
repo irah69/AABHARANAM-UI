@@ -174,19 +174,20 @@ export default function OrdersPage() {
                       const product = it.product || {};
                       const name = product.name || `Product #${it.productId}`;
 
-                      let image = "";
 
-                      if (
-                        Array.isArray(product.imageUrlss) &&
-                        product.imageUrlss.length > 0
-                      ) {
-                        image = product.imageUrlss[0];
-                      } else if (Array.isArray(product.imageUrls)) {
+                      // Robust image URL extraction (reference: ProductCard)
+                      let image = '';
+                      if (Array.isArray(product.imageUrls)) {
                         image = product.imageUrls[0];
-                      } else if (typeof product.imageUrls === "string" && product.imageUrls.includes(",")) {
-                        image = product.imageUrls.split(",").map(url => url.trim()).filter(url => url.length > 0)[0];
-                      } else {
-                        image = product.imageUrls || product.image;
+                      } else if (typeof product.imageUrls === 'string') {
+                        if (product.imageUrls.includes(',')) {
+                          image = product.imageUrls.split(',').map(url => url.trim()).filter(url => url.length > 0)[0];
+                        } else if (product.imageUrls.trim().length > 0) {
+                          image = product.imageUrls.trim();
+                        }
+                      }
+                      if (!image) {
+                        image = product.image || '/saree2.png';
                       }
 
                       const price = it.unitPrice ?? 0;
