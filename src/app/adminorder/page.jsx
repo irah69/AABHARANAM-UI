@@ -11,7 +11,7 @@ export default function AdminOrderPage() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://murgan-backend-1.onrender.com/api/admin/orders?page=${page}`)
+    fetch(`https://murgan-backend-1.onrender.com/api/products/orderd?page=${page}`)
       .then(res => res.json())
       .then(data => {
         setOrders(data.orders || []);
