@@ -64,7 +64,9 @@ export default function Footer() {
           {/* BRAND */}
           <div className="text-left">
 
+
             <div className="flex items-center mb-8">
+              <img src="/logo.png" alt="Murgan Logo" className="h-12 w-auto mr-3" style={{objectFit: 'contain'}} />
               <span className="text-xl font-semibold tracking-[0.2em] text-black">
                 MURGAN
               </span>

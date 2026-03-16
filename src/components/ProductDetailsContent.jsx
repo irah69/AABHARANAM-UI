@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useMemo } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { ratingsApi } from "@/lib/apiClient";
 import AddToCartButton from "@/components/AddToCartButton";
 
 export default function ProductDetailsContent({ product }) {
+  const { accessToken, isAuthenticated } = useAuth();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [rating, setRating] = useState(0);
@@ -50,12 +52,11 @@ export default function ProductDetailsContent({ product }) {
     setSubmitError("");
     setSubmitSuccess("");
     try {
-      // TODO: Replace with actual token from auth context if needed
-      const token = localStorage.getItem("murgan_access_token") || "";
+      if (!isAuthenticated || !accessToken) throw new Error("You must be signed in to rate products.");
       const res = await ratingsApi.rateProduct(product.id, {
         rating,
         description: review,
-        token,
+        token: accessToken,
       });
       setSubmitSuccess("Thank you for your review!");
       setRating(0);
@@ -222,7 +223,7 @@ export default function ProductDetailsContent({ product }) {
             {/* Ratings & Review Section */}
             <div className="border-t border-gray-100 pt-4">
               <h3 className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3">
-                Ratings & Reviews
+              Reviews
               </h3>
               <div className="mb-3 flex items-center gap-2">
                 <span className="text-lg font-bold text-yellow-500">★</span>
