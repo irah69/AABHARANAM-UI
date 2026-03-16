@@ -525,7 +525,19 @@ export default function CartPage() {
                   const product = item.product || item;
                   const productId = item.productId ?? product.id;
                   const qty = item.quantity ?? 0;
-                  const imageSrc = product.imageUrls || product.image || "/saree.png";
+                  // Safe conversion: string or array to array, use first image if available
+                  let imageSrc = "/saree.png";
+                  if (product.imageUrls) {
+                    const urls = Array.isArray(product.imageUrls)
+                      ? product.imageUrls
+                      : String(product.imageUrls)
+                          .split(",")
+                          .map((url) => url.trim())
+                          .filter((url) => url.length > 0);
+                    if (urls.length > 0) imageSrc = urls[0];
+                  } else if (product.image) {
+                    imageSrc = product.image;
+                  }
                   const name = product.name || `Product #${productId}`;
                   const price = product.price ?? 0;
                   const lineTotal = price * qty;

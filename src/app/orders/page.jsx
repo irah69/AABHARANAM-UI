@@ -225,19 +225,19 @@ export default function OrdersPage() {
                       const name = product.name || `Product #${it.productId}`;
 
 
-                      // Robust image URL extraction (reference: ProductCard)
-                      let image = '';
-                      if (Array.isArray(product.imageUrls)) {
-                        image = product.imageUrls[0];
-                      } else if (typeof product.imageUrls === 'string') {
-                        if (product.imageUrls.includes(',')) {
-                          image = product.imageUrls.split(',').map(url => url.trim()).filter(url => url.length > 0)[0];
-                        } else if (product.imageUrls.trim().length > 0) {
-                          image = product.imageUrls.trim();
-                        }
-                      }
-                      if (!image) {
-                        image = product.image || '/saree2.png';
+                      // Robust image URL extraction: handle array or comma-separated string
+                      let image = '/saree2.png';
+                      if (product.imageUrls) {
+                        const urls = Array.isArray(product.imageUrls)
+                          ? product.imageUrls
+                          : String(product.imageUrls)
+                              .split(',')
+                              .map((url) => url.trim())
+                              .filter((url) => url.length > 0);
+                        if (urls.length > 0) image = urls[0];
+                        else if (product.image) image = product.image;
+                      } else if (product.image) {
+                        image = product.image;
                       }
 
                       const price = it.unitPrice ?? 0;
