@@ -1,12 +1,19 @@
 'use client';
 
 import React, { useState, useMemo } from "react";
+import { ratingsApi } from "@/lib/apiClient";
 import AddToCartButton from "@/components/AddToCartButton";
 
 export default function ProductDetailsContent({ product }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState("");
+  const [averageRating, setAverageRating] = useState(product.averageRating || 0);
+  const [ratingsCount, setRatingsCount] = useState(product.ratingsCount || 0);
 
   if (!product) {
     return (
@@ -34,7 +41,34 @@ export default function ProductDetailsContent({ product }) {
         ? product.imageUrls.split(",").map((u) => u.trim()).filter(Boolean)
         : [];
 
-  const averageRating = 4.3;
+
+
+  // Handler for submitting a rating
+  async function handleRatingSubmit(e) {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError("");
+    setSubmitSuccess("");
+    try {
+      // TODO: Replace with actual token from auth context if needed
+      const token = localStorage.getItem("murgan_access_token") || "";
+      const res = await ratingsApi.rateProduct(product.id, {
+        rating,
+        description: review,
+        token,
+      });
+      setSubmitSuccess("Thank you for your review!");
+      setRating(0);
+      setReview("");
+      // Optionally update average rating and count if returned
+      if (res && res.averageRating) setAverageRating(res.averageRating);
+      if (res && res.ratingsCount) setRatingsCount(res.ratingsCount);
+    } catch (err) {
+      setSubmitError(err?.message || "Failed to submit rating.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     /* Root: full width, no horizontal overflow, light gradient bg */
@@ -185,29 +219,49 @@ export default function ProductDetailsContent({ product }) {
               </p>
             </div>
 
-            {/* Specifications */}
+            {/* Ratings & Review Section */}
             <div className="border-t border-gray-100 pt-4">
               <h3 className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3">
-                Specifications
+                Ratings & Reviews
               </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { label: "Category", value: product.category?.name || "N/A" },
-                  { label: "Stock",    value: `${product.stockQuantity} units` },
-                  { label: "Discount", value: `${discountPercent}% OFF` },
-                  { label: "Rating",   value: `${averageRating}/5` },
-                ].map(({ label, value }) => (
-                  <div
-                    key={label}
-                    className="bg-gray-50 border border-gray-100 rounded-lg p-3 flex flex-col gap-1"
-                  >
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      {label}
-                    </span>
-                    <span className="text-sm font-semibold text-gray-800 break-words">{value}</span>
-                  </div>
-                ))}
+              <div className="mb-3 flex items-center gap-2">
+                <span className="text-lg font-bold text-yellow-500">★</span>
+                <span className="text-base font-semibold text-gray-800">{averageRating ? averageRating.toFixed(1) : "No ratings yet"}</span>
+                {ratingsCount > 0 && (
+                  <span className="text-xs text-gray-500">({ratingsCount} rating{ratingsCount > 1 ? "s" : ""})</span>
+                )}
               </div>
+              <form className="flex flex-col gap-2 mt-2" onSubmit={handleRatingSubmit}>
+                <label className="text-sm font-semibold text-gray-700">Your Rating:</label>
+                <div className="flex gap-1 mb-1">
+                  {[1,2,3,4,5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      className={`text-2xl ${rating >= star ? "text-yellow-400" : "text-gray-300"}`}
+                      onClick={() => setRating(star)}
+                      aria-label={`Rate ${star}`}
+                    >★</button>
+                  ))}
+                </div>
+                <textarea
+                  className="border rounded p-2 text-sm min-h-[60px]"
+                  placeholder="Write your review..."
+                  value={review}
+                  onChange={e => setReview(e.target.value)}
+                  required
+                  disabled={submitting}
+                />
+                <button
+                  type="submit"
+                  className="bg-red-500 text-white px-4 py-2 rounded font-semibold mt-1 disabled:opacity-60"
+                  disabled={submitting || !rating || !review.trim()}
+                >
+                  {submitting ? "Submitting..." : "Submit Review"}
+                </button>
+                {submitError && <div className="text-red-600 text-xs mt-1">{submitError}</div>}
+                {submitSuccess && <div className="text-green-600 text-xs mt-1">{submitSuccess}</div>}
+              </form>
             </div>
 
           </div>{/* end RIGHT */}
