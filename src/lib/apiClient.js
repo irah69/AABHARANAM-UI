@@ -21,10 +21,11 @@ export async function apiRequest(path, options = {}) {
     headers = {},
   } = options;
 
-  const baseUrl = "https://murgan-backend-1.onrender.com/api";
+  // Use environment variable or fallback for local dev
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://murgan-backend-1.onrender.com/api";
 
   if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined in .env.local");
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined in environment variables");
   }
 
   const url = new URL(`${baseUrl}${path}`);
@@ -262,6 +263,21 @@ export const adminApi = {
   deleteProduct: (token, id, signal) =>
     apiRequest(`/admin/products/${id}`, {
       method: "DELETE",
+      token,
+      signal,
+    }),
+  getContactUs: (token, signal) =>
+    apiRequest("/admin/contactus", {
+      token,
+      signal,
+    }),
+  getSales: (token, signal) =>
+    apiRequest("/admin/sales", {
+      token,
+      signal,
+    }),
+  getOrders: ({ token }, signal) =>
+    apiRequest("/admin/orders", {
       token,
       signal,
     }),

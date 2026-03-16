@@ -341,18 +341,11 @@ export default function AdminOrderPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("https://murgan-backend-1.onrender.com/api/admin/orders", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => { setOrders(data || []); setLoading(false); })
-      .catch((err) => { setError(err.message); setLoading(false); });
+    import("@/lib/apiClient").then(({ adminApi }) => {
+      adminApi.getOrders({ token }, undefined)
+        .then((data) => { setOrders(data || []); setLoading(false); })
+        .catch((err) => { setError(err.message); setLoading(false); });
+    });
   }, []);
 
   if (loading) {

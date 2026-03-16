@@ -23,18 +23,7 @@ export default function AdminDashboard() {
   const contactusQuery = useQuery({
     queryKey: ["adminContactUs"],
     enabled: Boolean(accessToken),
-    queryFn: async ({ signal }) => {
-      const res = await fetch("https://murgan-backend-1.onrender.com/api/admin/contactus", {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        signal,
-      });
-      if (!res.ok) throw new Error("Failed to fetch contact messages");
-      return res.json();
-    },
+    queryFn: ({ signal }) => adminApi.getContactUs(accessToken, signal),
   });
 
   return (

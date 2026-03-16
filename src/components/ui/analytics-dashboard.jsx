@@ -20,49 +20,44 @@ function useSalesStats() {
   useEffect(() => {
     setLoading(true);
     const token = localStorage.getItem('murgan_access_token');
-    fetch('https://murgan-backend-1.onrender.com/api/admin/sales', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        // Map backend response to stat card format
-        const mappedStats = [
-          {
-            title: "Products Ordered",
-            value: res.productsOrdered,
-            change: "",
-            changeType: "positive",
-            icon: "CreditCard",
-            chartData: res.productsOrderedHistory || [],
-          },
-          {
-            title: "Active Users",
-            value: res.activeUsers,
-            change: "",
-            changeType: "positive",
-            icon: "Users",
-            chartData: res.activeUsersHistory || [],
-          },
-          {
-            title: "Total Revenue",
-            value: `₹${res.totalRevenue}`,
-            change: "",
-            changeType: "positive",
-            icon: "DollarSign",
-            chartData: res.totalRevenueHistory || [],
-          },
-        ];
-        setData(mappedStats);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err);
-        setLoading(false);
-      });
+    import("@/lib/apiClient").then(({ adminApi }) => {
+      adminApi.getSales(token)
+        .then((res) => {
+          // Map backend response to stat card format
+          const mappedStats = [
+            {
+              title: "Products Ordered",
+              value: res.productsOrdered,
+              change: "",
+              changeType: "positive",
+              icon: "CreditCard",
+              chartData: res.productsOrderedHistory || [],
+            },
+            {
+              title: "Active Users",
+              value: res.activeUsers,
+              change: "",
+              changeType: "positive",
+              icon: "Users",
+              chartData: res.activeUsersHistory || [],
+            },
+            {
+              title: "Total Revenue",
+              value: `₹${res.totalRevenue}`,
+              change: "",
+              changeType: "positive",
+              icon: "DollarSign",
+              chartData: res.totalRevenueHistory || [],
+            },
+          ];
+          setData(mappedStats);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError(err);
+          setLoading(false);
+        });
+    });
   }, []);
 
   return { data, loading, error };
