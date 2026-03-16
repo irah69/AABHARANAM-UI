@@ -225,17 +225,19 @@ export default function OrdersPage() {
                       const name = product.name || `Product #${it.productId}`;
 
 
-                      // Robust image URL extraction: handle array or comma-separated string
+                      // Robust image URL extraction: always use first valid, fallback to image, then default
                       let image = '/saree2.png';
+                      let urls = [];
                       if (product.imageUrls) {
-                        const urls = Array.isArray(product.imageUrls)
+                        urls = Array.isArray(product.imageUrls)
                           ? product.imageUrls
                           : String(product.imageUrls)
                               .split(',')
                               .map((url) => url.trim())
                               .filter((url) => url.length > 0);
-                        if (urls.length > 0) image = urls[0];
-                        else if (product.image) image = product.image;
+                      }
+                      if (urls.length > 0 && urls[0]) {
+                        image = urls[0];
                       } else if (product.image) {
                         image = product.image;
                       }
