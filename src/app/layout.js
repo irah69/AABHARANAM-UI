@@ -34,7 +34,8 @@ export default function RootLayout({ children }) {
         />
        
         <link rel="preload" as="image" href="/path/to/productssaree.png" />
-        <link rel="preload" as="video" href="/path/to/signin.mp4" type="video/mp4" />
+        <link rel="preload" as="video" href="/signin.mp4" type="video/mp4" />
+        <link rel="preload" as="video" href="/hero.mp4" type="video/mp4" />
       </head>
 
       <body>
