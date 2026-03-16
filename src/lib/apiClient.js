@@ -22,7 +22,7 @@ export async function apiRequest(path, options = {}) {
   } = options;
 
   // Use environment variable or fallback for local dev
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://murgan-backend-1.onrender.com/api";
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   if (!baseUrl) {
     throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined in environment variables");
