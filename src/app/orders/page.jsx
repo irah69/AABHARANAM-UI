@@ -225,21 +225,19 @@ export default function OrdersPage() {
                       const name = product.name || `Product #${it.productId}`;
 
 
-                      // Robust image URL extraction: always use first valid, fallback to image, then default
-                      let image = '/saree2.png';
+                      // Use first imageUrls entry if present, else fallback to /logo.png
+                      let image = '/logo.png';
                       let urls = [];
-                      if (product.imageUrls) {
-                        urls = Array.isArray(product.imageUrls)
-                          ? product.imageUrls
-                          : String(product.imageUrls)
-                              .split(',')
-                              .map((url) => url.trim())
-                              .filter((url) => url.length > 0);
+                      if (Array.isArray(product.imageUrls)) {
+                        urls = product.imageUrls.filter((url) => typeof url === 'string' && url.trim().length > 0);
+                      } else if (typeof product.imageUrls === 'string') {
+                        urls = product.imageUrls
+                          .split(',')
+                          .map((url) => url.trim())
+                          .filter((url) => url.length > 0);
                       }
-                      if (urls.length > 0 && urls[0]) {
+                      if (urls.length > 0 && typeof urls[0] === 'string' && urls[0].trim().length > 0) {
                         image = urls[0];
-                      } else if (product.image) {
-                        image = product.image;
                       }
 
                       const price = it.unitPrice ?? 0;
