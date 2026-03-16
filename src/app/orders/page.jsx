@@ -226,12 +226,14 @@ export default function OrdersPage() {
 
 
                       // Use first imageUrls entry if present, else fallback to /logo.png
+                      // Try imageUrls on both product and item, fallback to /logo.png
                       let image = '/logo.png';
                       let urls = [];
-                      if (Array.isArray(product.imageUrls)) {
-                        urls = product.imageUrls.filter((url) => typeof url === 'string' && url.trim().length > 0);
-                      } else if (typeof product.imageUrls === 'string') {
-                        urls = product.imageUrls
+                      const imageUrlsSource = product.imageUrls ?? it.imageUrls;
+                      if (Array.isArray(imageUrlsSource)) {
+                        urls = imageUrlsSource.filter((url) => typeof url === 'string' && url.trim().length > 0);
+                      } else if (typeof imageUrlsSource === 'string') {
+                        urls = imageUrlsSource
                           .split(',')
                           .map((url) => url.trim())
                           .filter((url) => url.length > 0);
@@ -245,34 +247,30 @@ export default function OrdersPage() {
 
                       return (
 
-                        <div
-                          key={idx}
-                          className="flex items-center gap-4 py-4"
-                        >
 
+                        <Link
+                          key={idx}
+                          href={`/products/${it.productId ?? product.id}`}
+                          className="flex items-center gap-4 py-4 hover:bg-gray-50 rounded transition"
+                          style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
                           <img
                             src={image}
                             alt={name}
                             className="w-16 h-16 object-cover rounded-md bg-gray-100 flex-shrink-0"
                           />
-
                           <div className="flex-1 min-w-0">
-
                             <div className="font-medium text-gray-900 truncate">
                               {name}
                             </div>
-
                             <div className="text-sm text-gray-500">
                               Qty: {qty}
                             </div>
-
                           </div>
-
                           <div className="text-sm font-semibold text-gray-800">
                             ₹{price * qty}
                           </div>
-
-                        </div>
+                        </Link>
 
                       );
 
