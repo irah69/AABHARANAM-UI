@@ -72,19 +72,6 @@ export default function ProductDetailsContent({ product }) {
                 </div>
               )}
 
-              {/* Wishlist button */}
-              <button
-                onClick={() => setIsWishlisted((w) => !w)}
-                aria-label="Toggle wishlist"
-                className={`absolute top-3 right-3 z-30 w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-transform duration-200 hover:scale-110
-                  ${isWishlisted ? "bg-orange-50 text-orange-600" : "bg-white text-orange-500"}`}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24"
-                  fill={isWishlisted ? "currentColor" : "none"}
-                  stroke="currentColor" strokeWidth="2">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-              </button>
             </div>
 
             {/* Thumbnails – 4 per row, wrap safely */}
