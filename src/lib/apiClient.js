@@ -58,10 +58,15 @@ export async function apiRequest(path, options = {}) {
     ...headers,
   };
 
+
+  // Detect if body is URLSearchParams (form data)
+  const isFormBody = body instanceof URLSearchParams;
   const hasJsonBody =
     body !== undefined &&
     body !== null &&
-    !(body instanceof FormData);
+    !(body instanceof FormData) &&
+    !isFormBody &&
+    typeof body !== "string";
 
   if (hasJsonBody) {
     requestHeaders["Content-Type"] = "application/json";
