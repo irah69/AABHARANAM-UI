@@ -1,6 +1,6 @@
 // Product Ratings API
 export const ratingsApi = {
-  rateProduct: async (productId, { rating, description, token }, signal) => {
+  rateProduct: async (productId, { rating, description }, token, signal) => {
     const form = new URLSearchParams();
     form.append('rating', rating);
     form.append('description', description);

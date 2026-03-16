@@ -48,16 +48,20 @@ export default function ProductDetailsContent({ product }) {
   // Handler for submitting a rating
   async function handleRatingSubmit(e) {
     e.preventDefault();
+    if (!isAuthenticated || !accessToken) {
+      setSubmitError("You must be signed in to rate products.");
+      setSubmitting(false);
+      return;
+    }
     setSubmitting(true);
     setSubmitError("");
     setSubmitSuccess("");
     try {
-      if (!isAuthenticated || !accessToken) throw new Error("You must be signed in to rate products.");
-      const res = await ratingsApi.rateProduct(product.id, {
-        rating,
-        description: review,
-        token: accessToken,
-      });
+      const res = await ratingsApi.rateProduct(
+        product.id,
+        { rating, description: review },
+        accessToken
+      );
       setSubmitSuccess("Thank you for your review!");
       setRating(0);
       setReview("");
