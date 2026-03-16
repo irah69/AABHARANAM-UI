@@ -45,15 +45,7 @@
 /* subtle shiny overlay at top of image */
 .product-main-image::before {
   content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 20%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, transparent 100%);
-  pointer-events: none;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  /* Overlay removed: no white gradient on top of product image */
 }
 
 .main-product-img {
