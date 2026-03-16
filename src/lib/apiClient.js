@@ -9,6 +9,12 @@ export const ratingsApi = {
       // No Content-Type header, no body
     });
   },
+  getProductRatings: async (productId, signal) => {
+    return apiRequest(`/ratings/product/${productId}`, {
+      method: 'GET',
+      signal,
+    });
+  },
 };
 import { ApiError } from "@/lib/apiError";
 

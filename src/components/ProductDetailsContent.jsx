@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ratingsApi } from "@/lib/apiClient";
 import AddToCartButton from "@/components/AddToCartButton";
@@ -16,6 +16,8 @@ export default function ProductDetailsContent({ product }) {
   const [submitSuccess, setSubmitSuccess] = useState("");
   const [averageRating, setAverageRating] = useState(product.averageRating || 0);
   const [ratingsCount, setRatingsCount] = useState(product.ratingsCount || 0);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
 
   if (!product) {
     return (
@@ -24,6 +26,22 @@ export default function ProductDetailsContent({ product }) {
       </div>
     );
   }
+
+  // Fetch reviews on mount
+  useEffect(() => {
+    async function fetchReviews() {
+      setReviewsLoading(true);
+      try {
+        const data = await ratingsApi.getProductRatings(product.id);
+        setReviews(Array.isArray(data) ? data : []);
+      } catch {
+        setReviews([]);
+      } finally {
+        setReviewsLoading(false);
+      }
+    }
+    fetchReviews();
+  }, [product.id]);
 
   const discountPercent = useMemo(() => {
     const base = Number(product.id) || 0;
@@ -43,9 +61,20 @@ export default function ProductDetailsContent({ product }) {
         ? product.imageUrls.split(",").map((u) => u.trim()).filter(Boolean)
         : [];
 
+  async function fetchReviews() {
+    try {
+      const data = await ratingsApi.getProductRatings(product.id);
+      setReviews(Array.isArray(data) ? data : []);
+      if (data?.length) {
+        const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+        setAverageRating(avg);
+        setRatingsCount(data.length);
+      }
+    } catch {
+      // silently fail
+    }
+  }
 
-
-  // Handler for submitting a rating
   async function handleRatingSubmit(e) {
     e.preventDefault();
     if (!isAuthenticated || !accessToken) {
@@ -57,7 +86,7 @@ export default function ProductDetailsContent({ product }) {
     setSubmitError("");
     setSubmitSuccess("");
     try {
-      const res = await ratingsApi.rateProduct(
+      await ratingsApi.rateProduct(
         product.id,
         { rating, description: review },
         accessToken
@@ -65,9 +94,7 @@ export default function ProductDetailsContent({ product }) {
       setSubmitSuccess("Thank you for your review!");
       setRating(0);
       setReview("");
-      // Optionally update average rating and count if returned
-      if (res && res.averageRating) setAverageRating(res.averageRating);
-      if (res && res.ratingsCount) setRatingsCount(res.ratingsCount);
+      await fetchReviews(); // refresh reviews list
     } catch (err) {
       setSubmitError(err?.message || "Failed to submit rating.");
     } finally {
@@ -76,23 +103,14 @@ export default function ProductDetailsContent({ product }) {
   }
 
   return (
-    /* Root: full width, no horizontal overflow, light gradient bg */
     <div className="w-full max-w-full overflow-x-hidden bg-gradient-to-br from-white to-gray-50 min-h-screen px-3 py-5 sm:px-5 sm:py-8 md:px-6 md:py-10">
-
-      {/* ── Card wrapper ── */}
       <div className="w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
-
-        {/* Two-column on md+, single-column on mobile */}
         <div className="flex flex-col md:flex-row">
 
           {/* ════════════ LEFT – Images ════════════ */}
           <div className="w-full md:w-[45%] flex-shrink-0 p-4 sm:p-6 flex flex-col gap-4">
-
-            {/* Main image */}
             <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 shadow">
-              {/* Shiny overlay */}
               <div className="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-white/60 to-transparent pointer-events-none z-10 rounded-t-xl" />
-
               {images[selectedImageIndex] ? (
                 <img
                   src={images[selectedImageIndex]}
@@ -100,20 +118,14 @@ export default function ProductDetailsContent({ product }) {
                   className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">
-                  No image
-                </div>
+                <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">No image</div>
               )}
-
               {product.stockQuantity === 0 && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20">
                   <span className="text-white text-xl font-semibold tracking-wide">Out of Stock</span>
                 </div>
               )}
-
             </div>
-
-            {/* Thumbnails – 4 per row, wrap safely */}
             {images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {images.map((img, i) => (
@@ -191,9 +203,7 @@ export default function ProductDetailsContent({ product }) {
                     disabled={quantity <= 1}
                     className="w-10 h-10 flex items-center justify-center text-lg font-bold text-gray-700
                       hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    −
-                  </button>
+                  >−</button>
                   <span className="min-w-[36px] text-center font-semibold text-gray-800 text-sm px-1">
                     {quantity}
                   </span>
@@ -202,13 +212,9 @@ export default function ProductDetailsContent({ product }) {
                     disabled={quantity >= product.stockQuantity}
                     className="w-10 h-10 flex items-center justify-center text-lg font-bold text-gray-700
                       hover:bg-gray-100 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                  >
-                    +
-                  </button>
+                  >+</button>
                 </div>
               </div>
-
-              {/* AddToCart fills full width on mobile */}
               <div className="w-full">
                 <AddToCartButton productId={product.id} />
               </div>
@@ -224,33 +230,37 @@ export default function ProductDetailsContent({ product }) {
               </p>
             </div>
 
-            {/* Ratings & Review Section */}
-            <div className="border-t border-gray-100 pt-4">
-              <h3 className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3">
-              Reviews
-              </h3>
-              <div className="mb-3 flex items-center gap-2">
+            {/* ════════════ Reviews Section ════════════ */}
+            <div className="border-t border-gray-100 pt-4 flex flex-col gap-4">
+              <h3 className="text-xs font-bold text-gray-700 uppercase tracking-widest">Reviews</h3>
+
+              {/* Average rating summary */}
+              <div className="flex items-center gap-2">
                 <span className="text-lg font-bold text-yellow-500">★</span>
-                <span className="text-base font-semibold text-gray-800">{averageRating ? averageRating.toFixed(1) : "No ratings yet"}</span>
+                <span className="text-base font-semibold text-gray-800">
+                  {averageRating ? averageRating.toFixed(1) : "No ratings yet"}
+                </span>
                 {ratingsCount > 0 && (
                   <span className="text-xs text-gray-500">({ratingsCount} rating{ratingsCount > 1 ? "s" : ""})</span>
                 )}
               </div>
-              <form className="flex flex-col gap-2 mt-2" onSubmit={handleRatingSubmit}>
+
+              {/* Review submission form */}
+              <form className="flex flex-col gap-2 bg-gray-50 rounded-xl p-4" onSubmit={handleRatingSubmit}>
                 <label className="text-sm font-semibold text-gray-700">Your Rating:</label>
                 <div className="flex gap-1 mb-1">
-                  {[1,2,3,4,5].map((star) => (
+                  {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       type="button"
                       key={star}
-                      className={`text-2xl ${rating >= star ? "text-yellow-400" : "text-gray-300"}`}
+                      className={`text-2xl transition-colors ${rating >= star ? "text-yellow-400" : "text-gray-300"}`}
                       onClick={() => setRating(star)}
                       aria-label={`Rate ${star}`}
                     >★</button>
                   ))}
                 </div>
                 <textarea
-                  className="border rounded p-2 text-sm min-h-[60px]"
+                  className="border rounded-lg p-2 text-sm min-h-[70px] resize-none focus:outline-none focus:ring-2 focus:ring-red-200"
                   placeholder="Write your review..."
                   value={review}
                   onChange={e => setReview(e.target.value)}
@@ -259,16 +269,52 @@ export default function ProductDetailsContent({ product }) {
                 />
                 <button
                   type="submit"
-                  className="bg-red-500 text-white px-4 py-2 rounded font-semibold mt-1 disabled:opacity-60"
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold mt-1 disabled:opacity-60 hover:bg-red-600 transition-colors"
                   disabled={submitting || !rating || !review.trim()}
                 >
                   {submitting ? "Submitting..." : "Submit Review"}
                 </button>
-                {submitError && <div className="text-red-600 text-xs mt-1">{submitError}</div>}
-                {submitSuccess && <div className="text-green-600 text-xs mt-1">{submitSuccess}</div>}
+                {submitError && <p className="text-red-600 text-xs mt-1">{submitError}</p>}
+                {submitSuccess && <p className="text-green-600 text-xs mt-1">{submitSuccess}</p>}
               </form>
-            </div>
 
+              {/* Reviews list */}
+              <div className="flex flex-col gap-3">
+                {reviewsLoading ? (
+                  <p className="text-sm text-gray-400 text-center py-4">Loading reviews...</p>
+                ) : reviews.length === 0 ? (
+                  <p className="text-sm text-gray-400 text-center py-4">No reviews yet. Be the first to review!</p>
+                ) : (
+                  reviews.map((r) => (
+                    <div key={r.id} className="bg-gray-50 rounded-xl p-3 sm:p-4 flex flex-col gap-1 border border-gray-100">
+                      {/* Stars + date row */}
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <span
+                              key={star}
+                              className={`text-base ${r.rating >= star ? "text-yellow-400" : "text-gray-300"}`}
+                            >★</span>
+                          ))}
+                        </div>
+                        {r.createdAt && (
+                          <span className="text-xs text-gray-400">
+                            {new Date(r.createdAt).toLocaleDateString("en-IN", {
+                              day: "numeric", month: "short", year: "numeric"
+                            })}
+                          </span>
+                        )}
+                      </div>
+                      {/* Review text */}
+                      <p className="text-sm text-gray-700 leading-relaxed break-words">
+                        {r.description}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+
+            </div>{/* end Reviews Section */}
           </div>{/* end RIGHT */}
         </div>{/* end flex row */}
       </div>{/* end card */}
