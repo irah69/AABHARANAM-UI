@@ -1,15 +1,12 @@
 // Product Ratings API
 export const ratingsApi = {
   rateProduct: async (productId, { rating, description }, token, signal) => {
-    const form = new URLSearchParams();
-    form.append('rating', rating);
-    form.append('description', description);
     return apiRequest(`/ratings/product/${productId}`, {
       method: 'POST',
       token,
-      body: form,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      query: { rating, description },
       signal,
+      // No Content-Type header, no body
     });
   },
 };
