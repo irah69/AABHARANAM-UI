@@ -59,16 +59,16 @@ export async function apiRequest(path, options = {}) {
   };
 
 
-  // Detect if body is URLSearchParams (form data)
-  const isFormBody = body instanceof URLSearchParams;
+  // Detect if body is URLSearchParams (form data) or string (for x-www-form-urlencoded)
+  const isFormBody = body instanceof URLSearchParams || typeof body === "string";
   const hasJsonBody =
     body !== undefined &&
     body !== null &&
     !(body instanceof FormData) &&
-    !isFormBody &&
-    typeof body !== "string";
+    !isFormBody;
 
-  if (hasJsonBody) {
+  // Only set Content-Type for JSON if not already set
+  if (hasJsonBody && !requestHeaders["Content-Type"]) {
     requestHeaders["Content-Type"] = "application/json";
   }
 
@@ -79,7 +79,7 @@ export async function apiRequest(path, options = {}) {
   const res = await fetch(url.toString(), {
     method,
     headers: requestHeaders,
-    body: hasJsonBody ? JSON.stringify(body) : body,
+    body: hasJsonBody ? JSON.stringify(body) : (isFormBody ? body : undefined),
     signal,
     cache: "no-store",
   });
