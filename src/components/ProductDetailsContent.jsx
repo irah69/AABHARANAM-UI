@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ratingsApi } from "@/lib/apiClient";
 import AddToCartButton from "@/components/AddToCartButton";
@@ -14,8 +14,8 @@ export default function ProductDetailsContent({ product }) {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState("");
-  const [averageRating, setAverageRating] = useState(product.averageRating || 0);
-  const [ratingsCount, setRatingsCount] = useState(product.ratingsCount || 0);
+  const [averageRating, setAverageRating] = useState(0);
+  const [ratingsCount, setRatingsCount] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
 
@@ -27,21 +27,30 @@ export default function ProductDetailsContent({ product }) {
     );
   }
 
-  // Fetch reviews on mount
-  useEffect(() => {
-    async function fetchReviews() {
-      setReviewsLoading(true);
-      try {
-        const data = await ratingsApi.getProductRatings(product.id);
-        setReviews(Array.isArray(data) ? data : []);
-      } catch {
-        setReviews([]);
-      } finally {
-        setReviewsLoading(false);
+  const fetchReviews = useCallback(async () => {
+    setReviewsLoading(true);
+    try {
+      const data = await ratingsApi.getProductRatings(product.id);
+      const list = Array.isArray(data) ? data : [];
+      setReviews(list);
+      if (list.length > 0) {
+        const avg = list.reduce((sum, r) => sum + r.rating, 0) / list.length;
+        setAverageRating(avg);
+        setRatingsCount(list.length);
+      } else {
+        setAverageRating(0);
+        setRatingsCount(0);
       }
+    } catch {
+      setReviews([]);
+    } finally {
+      setReviewsLoading(false);
     }
-    fetchReviews();
   }, [product.id]);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
   const discountPercent = useMemo(() => {
     const base = Number(product.id) || 0;
@@ -60,20 +69,6 @@ export default function ProductDetailsContent({ product }) {
       : typeof product.imageUrls === "string"
         ? product.imageUrls.split(",").map((u) => u.trim()).filter(Boolean)
         : [];
-
-  async function fetchReviews() {
-    try {
-      const data = await ratingsApi.getProductRatings(product.id);
-      setReviews(Array.isArray(data) ? data : []);
-      if (data?.length) {
-        const avg = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
-        setAverageRating(avg);
-        setRatingsCount(data.length);
-      }
-    } catch {
-      // silently fail
-    }
-  }
 
   async function handleRatingSubmit(e) {
     e.preventDefault();
@@ -94,7 +89,7 @@ export default function ProductDetailsContent({ product }) {
       setSubmitSuccess("Thank you for your review!");
       setRating(0);
       setReview("");
-      await fetchReviews(); // refresh reviews list
+      await fetchReviews();
     } catch (err) {
       setSubmitError(err?.message || "Failed to submit rating.");
     } finally {
@@ -105,6 +100,8 @@ export default function ProductDetailsContent({ product }) {
   return (
     <div className="w-full max-w-full overflow-x-hidden bg-gradient-to-br from-white to-gray-50 min-h-screen px-3 py-5 sm:px-5 sm:py-8 md:px-6 md:py-10">
       <div className="w-full max-w-6xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+
+        {/* ── Top section: two-column on md+ ── */}
         <div className="flex flex-col md:flex-row">
 
           {/* ════════════ LEFT – Images ════════════ */}
@@ -230,93 +227,99 @@ export default function ProductDetailsContent({ product }) {
               </p>
             </div>
 
-            {/* ════════════ Reviews Section ════════════ */}
-            <div className="border-t border-gray-100 pt-4 flex flex-col gap-4">
-              <h3 className="text-xs font-bold text-gray-700 uppercase tracking-widest">Reviews</h3>
-
-              {/* Average rating summary */}
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-yellow-500">★</span>
-                <span className="text-base font-semibold text-gray-800">
-                  {averageRating ? averageRating.toFixed(1) : "No ratings yet"}
-                </span>
-                {ratingsCount > 0 && (
-                  <span className="text-xs text-gray-500">({ratingsCount} rating{ratingsCount > 1 ? "s" : ""})</span>
-                )}
-              </div>
-
-              {/* Review submission form */}
-              <form className="flex flex-col gap-2 bg-gray-50 rounded-xl p-4" onSubmit={handleRatingSubmit}>
-                <label className="text-sm font-semibold text-gray-700">Your Rating:</label>
-                <div className="flex gap-1 mb-1">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      type="button"
-                      key={star}
-                      className={`text-2xl transition-colors ${rating >= star ? "text-yellow-400" : "text-gray-300"}`}
-                      onClick={() => setRating(star)}
-                      aria-label={`Rate ${star}`}
-                    >★</button>
-                  ))}
-                </div>
-                <textarea
-                  className="border rounded-lg p-2 text-sm min-h-[70px] resize-none focus:outline-none focus:ring-2 focus:ring-red-200"
-                  placeholder="Write your review..."
-                  value={review}
-                  onChange={e => setReview(e.target.value)}
-                  required
-                  disabled={submitting}
-                />
-                <button
-                  type="submit"
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold mt-1 disabled:opacity-60 hover:bg-red-600 transition-colors"
-                  disabled={submitting || !rating || !review.trim()}
-                >
-                  {submitting ? "Submitting..." : "Submit Review"}
-                </button>
-                {submitError && <p className="text-red-600 text-xs mt-1">{submitError}</p>}
-                {submitSuccess && <p className="text-green-600 text-xs mt-1">{submitSuccess}</p>}
-              </form>
-
-              {/* Reviews list */}
-              <div className="flex flex-col gap-3">
-                {reviewsLoading ? (
-                  <p className="text-sm text-gray-400 text-center py-4">Loading reviews...</p>
-                ) : reviews.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-4">No reviews yet. Be the first to review!</p>
-                ) : (
-                  reviews.map((r) => (
-                    <div key={r.id} className="bg-gray-50 rounded-xl p-3 sm:p-4 flex flex-col gap-1 border border-gray-100">
-                      {/* Stars + date row */}
-                      <div className="flex items-center justify-between gap-2 flex-wrap">
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                              key={star}
-                              className={`text-base ${r.rating >= star ? "text-yellow-400" : "text-gray-300"}`}
-                            >★</span>
-                          ))}
-                        </div>
-                        {r.createdAt && (
-                          <span className="text-xs text-gray-400">
-                            {new Date(r.createdAt).toLocaleDateString("en-IN", {
-                              day: "numeric", month: "short", year: "numeric"
-                            })}
-                          </span>
-                        )}
-                      </div>
-                      {/* Review text */}
-                      <p className="text-sm text-gray-700 leading-relaxed break-words">
-                        {r.description}
-                      </p>
-                    </div>
-                  ))
-                )}
-              </div>
-
-            </div>{/* end Reviews Section */}
           </div>{/* end RIGHT */}
-        </div>{/* end flex row */}
+        </div>{/* end top two-column */}
+
+        {/* ════════════ REVIEWS – Full width below both columns ════════════ */}
+        <div className="border-t border-gray-100 p-4 sm:p-6 flex flex-col gap-5">
+          <h3 className="text-xs font-bold text-gray-700 uppercase tracking-widest">Reviews</h3>
+
+          {/* Average rating summary */}
+          <div className="flex items-center gap-2">
+            <div className="flex gap-0.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span key={star} className={`text-xl ${averageRating >= star ? "text-yellow-400" : "text-gray-300"}`}>★</span>
+              ))}
+            </div>
+            <span className="text-base font-semibold text-gray-800">
+              {averageRating ? averageRating.toFixed(1) : "No ratings yet"}
+            </span>
+            {ratingsCount > 0 && (
+              <span className="text-xs text-gray-500">({ratingsCount} rating{ratingsCount > 1 ? "s" : ""})</span>
+            )}
+          </div>
+
+          {/* Two-column on md+: form left, reviews list right */}
+          <div className="flex flex-col md:flex-row gap-6">
+
+            {/* Submit form */}
+            <form
+              className="flex flex-col gap-3 bg-gray-50 rounded-xl p-4 w-full md:w-[45%] flex-shrink-0 self-start"
+              onSubmit={handleRatingSubmit}
+            >
+              <label className="text-sm font-semibold text-gray-700">Your Rating:</label>
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    type="button"
+                    key={star}
+                    className={`text-2xl transition-colors ${rating >= star ? "text-yellow-400" : "text-gray-300"}`}
+                    onClick={() => setRating(star)}
+                    aria-label={`Rate ${star}`}
+                  >★</button>
+                ))}
+              </div>
+              <textarea
+                className="border rounded-lg p-2 text-sm min-h-[100px] resize-none focus:outline-none focus:ring-2 focus:ring-red-200"
+                placeholder="Write your review..."
+                value={review}
+                onChange={e => setReview(e.target.value)}
+                required
+                disabled={submitting}
+              />
+              <button
+                type="submit"
+                className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-60 hover:bg-red-600 transition-colors"
+                disabled={submitting || !rating || !review.trim()}
+              >
+                {submitting ? "Submitting..." : "Submit Review"}
+              </button>
+              {submitError && <p className="text-red-600 text-xs">{submitError}</p>}
+              {submitSuccess && <p className="text-green-600 text-xs">{submitSuccess}</p>}
+            </form>
+
+            {/* Reviews list */}
+            <div className="flex flex-col gap-3 w-full">
+              {reviewsLoading ? (
+                <p className="text-sm text-gray-400 text-center py-6">Loading reviews...</p>
+              ) : reviews.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-6">No reviews yet. Be the first to review!</p>
+              ) : (
+                reviews.map((r) => (
+                  <div key={r.id} className="bg-gray-50 rounded-xl p-3 sm:p-4 flex flex-col gap-1 border border-gray-100">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <div className="flex gap-0.5">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span key={star} className={`text-base ${r.rating >= star ? "text-yellow-400" : "text-gray-300"}`}>★</span>
+                        ))}
+                      </div>
+                      {r.createdAt && (
+                        <span className="text-xs text-gray-400">
+                          {new Date(r.createdAt).toLocaleDateString("en-IN", {
+                            day: "numeric", month: "short", year: "numeric"
+                          })}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-gray-700 leading-relaxed break-words">{r.description}</p>
+                  </div>
+                ))
+              )}
+            </div>
+
+          </div>
+        </div>{/* end Reviews full width */}
+
       </div>{/* end card */}
     </div>
   );
