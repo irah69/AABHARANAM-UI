@@ -109,7 +109,7 @@ export default function ProductsPage() {
       >
         {/* Search */}
         <div className="flex-1 w-full">
-          <label className="block text-xs font-semibold text-gray-700 mb-2">Search</label>
+         
           <input
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(0); }}
