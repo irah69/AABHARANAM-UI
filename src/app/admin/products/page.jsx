@@ -22,6 +22,7 @@ export default function AdminProductsPage() {
     stockQuantity: "",
     imageUrls: "",
     categoryId: "",
+    discount: "",
   });
   const [error, setError] = useState("");
 
@@ -80,6 +81,13 @@ export default function AdminProductsPage() {
           .map((url) => url.trim())
           .filter((url) => url.length > 0);
 
+    // Validate discount
+    const discountValue = Number(form.discount);
+    if (isNaN(discountValue) || discountValue < 0) {
+      setError("Discount must be a number 0 or greater.");
+      return;
+    }
+
     const payload = {
       name: form.name,
       description: form.description,
@@ -87,6 +95,7 @@ export default function AdminProductsPage() {
       stockQuantity: Number(form.stockQuantity),
       imageUrls: imageUrlsArray,
       categoryId: Number(form.categoryId),
+      discount: discountValue,
     };
 
     try {
@@ -102,6 +111,7 @@ export default function AdminProductsPage() {
         stockQuantity: "",
         imageUrls: "",
         categoryId: "",
+        discount: "",
       });
     } catch (err) {
       setError(err?.message || "Failed to save product.");
@@ -128,6 +138,21 @@ export default function AdminProductsPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-sm font-semibold mb-1">Discount (%)</label>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={form.discount}
+                            onChange={(e) =>
+                              setForm((f) => ({ ...f, discount: e.target.value }))
+                            }
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                            placeholder="0"
+                            required
+                          />
+                        </div>
             <div>
               <label className="block text-sm font-semibold mb-1">Name</label>
               <input
@@ -259,6 +284,7 @@ export default function AdminProductsPage() {
                   <th className="text-left p-3">ID</th>
                   <th className="text-left p-3">Name</th>
                   <th className="text-left p-3">Price</th>
+                  <th className="text-left p-3">Discount (%)</th>
                   <th className="text-left p-3">Stock</th>
                   <th className="text-left p-3">Category</th>
                   <th className="text-left p-3">Actions</th>
@@ -270,6 +296,7 @@ export default function AdminProductsPage() {
                     <td className="p-3">{p.id}</td>
                     <td className="p-3">{p.name}</td>
                     <td className="p-3">₹{p.price}</td>
+                    <td className="p-3">{p.discount ?? 0}</td>
                     <td className="p-3">{p.stockQuantity ?? "—"}</td>
                     <td className="p-3">
                       {p.category?.name ||
@@ -291,6 +318,7 @@ export default function AdminProductsPage() {
                                 ? p.imageUrls.join(", ")
                                 : (typeof p.imageUrls === "string" ? p.imageUrls : ""),
                               categoryId: String(p.categoryId ?? p.category?.id ?? ""),
+                              discount: typeof p.discount !== "undefined" ? String(p.discount) : "",
                             });
                           }}
                           className="underline"
