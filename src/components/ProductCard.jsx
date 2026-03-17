@@ -34,11 +34,11 @@ export default function ProductCard({ product }) {
   return (
     <div className="pg-product-card bg-white border border-[#e8e8e8] overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
       {/* Image Container */}
-      <Link href={`/products/${product.id}`} className="pg-product-card-image-wrapper relative overflow-hidden bg-[#f5f5f5] h-64 flex items-center justify-center group">
+      <Link href={`/products/${product.id}`} className="pg-product-card-image-wrapper relative overflow-hidden bg-[#f5f5f5] aspect-[3/4] flex items-center justify-center group">
         <img
           src={imageSrc}
           alt={product.name}
-          className="pg-product-card-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="pg-product-card-image w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
         />
         {discount > 0 && (
           <div className="pg-product-card-badge absolute top-4 right-4 bg-black text-white px-2 py-1 text-xs font-semibold">
@@ -92,9 +92,6 @@ export default function ProductCard({ product }) {
             )}
           </div>
         </div>
-
-        {/* Stock Status */}
-
 
         {/* Buttons */}
         <div className="mt-auto space-y-2">
@@ -192,4 +189,3 @@ export default function ProductCard({ product }) {
     </div>
   );
 }
-
