@@ -62,13 +62,11 @@ export default function ProductDetailsContent({ product }) {
     [product.price, discountPercent]
   );
 
-  const images = Array.isArray(product.imageUrlss)
-    ? product.imageUrlss
-    : Array.isArray(product.imageUrls)
-      ? product.imageUrls
-      : typeof product.imageUrls === "string"
-        ? product.imageUrls.split(",").map((u) => u.trim()).filter(Boolean)
-        : [];
+  const images = Array.isArray(product.imageUrls)
+    ? product.imageUrls
+    : typeof product.imageUrls === "string"
+      ? product.imageUrls.split(",").map((u) => u.trim()).filter(Boolean)
+      : [];
 
   async function handleRatingSubmit(e) {
     e.preventDefault();
@@ -106,13 +104,14 @@ export default function ProductDetailsContent({ product }) {
 
           {/* ════════════ LEFT – Images ════════════ */}
           <div className="w-full md:w-[45%] flex-shrink-0 p-4 sm:p-6 flex flex-col gap-4">
-            <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-100 shadow">
-              <div className="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-white/60 to-transparent pointer-events-none z-10 rounded-t-xl" />
+
+            {/* Main image — aspect-[3/4] + object-contain, no white glow overlay */}
+            <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-gray-100 shadow">
               {images[selectedImageIndex] ? (
                 <img
                   src={images[selectedImageIndex]}
                   alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">No image</div>
@@ -123,6 +122,8 @@ export default function ProductDetailsContent({ product }) {
                 </div>
               )}
             </div>
+
+            {/* Thumbnails */}
             {images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {images.map((img, i) => (
@@ -135,7 +136,7 @@ export default function ProductDetailsContent({ product }) {
                         : "border-transparent hover:border-gray-300 hover:-translate-y-0.5"
                       }`}
                   >
-                    <img src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
+                    <img src={img} alt={`View ${i + 1}`} className="w-full h-full object-contain" />
                   </button>
                 ))}
               </div>
