@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Tag, IndianRupee, Package, ArrowUpDown, SlidersHorizontal } from "lucide-react";
+import { X, Tag, IndianRupee, Package, ArrowUpDown } from "lucide-react";
 
 const DUMMY_CATEGORIES = [
   { id: 1,  name: "Banarasi Silk" },
