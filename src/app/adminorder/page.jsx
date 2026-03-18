@@ -14,7 +14,6 @@ const STATUS_OPTIONS = [
 
 const styles = `
   @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
-
   *, *::before, *::after { box-sizing: border-box; }
 
   .orders-root {
@@ -24,6 +23,7 @@ const styles = `
     color: #111;
   }
 
+  /* Header */
   .orders-header {
     padding: 48px 24px 24px;
     border-bottom: 1.5px solid #111;
@@ -42,38 +42,39 @@ const styles = `
   }
   .orders-count {
     font-size: 0.78rem;
-    font-weight: 400;
     color: #999;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding-bottom: 6px;
   }
 
+  /* List */
   .orders-list {
     padding: 0 24px 80px;
-    max-width: 960px;
+    max-width: 860px;
     margin: 0 auto;
   }
 
-  /* ── Card ── */
+  /* Card */
   .order-card { border-bottom: 1px solid #e8e8e8; }
 
   .order-summary {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
     padding: 20px 0;
     cursor: pointer;
     user-select: none;
   }
 
-  .order-meta-strip {
+  /* Left: id + name */
+  .order-left {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
+    gap: 14px;
     min-width: 0;
+    flex: 1;
   }
 
   .order-id {
@@ -83,33 +84,19 @@ const styles = `
     margin: 0;
     white-space: nowrap;
     flex-shrink: 0;
+    color: #bbb;
   }
 
-  .meta-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.7rem;
-    color: #888;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border: 1px solid #e0e0e0;
+  .order-name {
+    font-size: 0.92rem;
+    font-weight: 600;
     white-space: nowrap;
-    flex-shrink: 0;
-  }
-  .meta-pill svg { opacity: 0.5; flex-shrink: 0; }
-
-  .meta-amount {
-    font-size: 0.88rem;
-    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: #111;
-    padding: 3px 10px;
-    border: 1px solid #111;
-    white-space: nowrap;
-    flex-shrink: 0;
   }
 
+  /* Right: dropdown + chevron */
   .order-controls {
     display: flex;
     align-items: center;
@@ -129,7 +116,7 @@ const styles = `
   }
   .chevron.open { transform: rotate(-135deg); margin-top: 4px; border-color: #111; }
 
-  /* ── Expanded panel ── */
+  /* Expanded panel */
   .order-panel {
     padding: 0 0 24px;
     animation: panelIn 0.18s ease;
@@ -146,11 +133,7 @@ const styles = `
     background: #e8e8e8;
     border: 1px solid #e8e8e8;
   }
-
-  .panel-section {
-    background: #fff;
-    padding: 18px 20px;
-  }
+  .panel-section { background: #fff; padding: 18px 20px; }
   .panel-section.full { grid-column: 1 / -1; }
 
   .section-label {
@@ -163,14 +146,9 @@ const styles = `
     align-items: center;
     gap: 7px;
   }
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #f0f0f0;
-  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: #f0f0f0; }
 
-  /* customer */
+  /* Customer section */
   .customer-row { display: flex; align-items: center; gap: 12px; }
   .avatar-lg {
     width: 38px; height: 38px;
@@ -187,22 +165,22 @@ const styles = `
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .customer-email {
-    font-size: 0.72rem; color: #999; letter-spacing: 0.03em;
+    font-size: 0.72rem; color: #999;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  /* amount */
+  /* Payment section */
   .amount-row {
     display: flex; justify-content: space-between; align-items: baseline;
     gap: 12px; padding: 5px 0;
-    border-bottom: 1px solid #f5f5f5; font-size: 0.8rem;
+    border-bottom: 1px solid #f5f5f5;
   }
   .amount-row:last-child { border-bottom: none; }
-  .amount-label { color: #888; text-transform: uppercase; letter-spacing: 0.07em; font-size: 0.68rem; }
-  .amount-value { font-weight: 700; font-size: 0.92rem; }
+  .amount-label { font-size: 0.68rem; color: #888; text-transform: uppercase; letter-spacing: 0.07em; }
+  .amount-value { font-size: 0.92rem; font-weight: 700; }
   .amount-value.total { font-size: 1.05rem; }
 
-  /* items table */
+  /* Items table */
   .items-table { width: 100%; border-collapse: collapse; }
   .items-table th {
     font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
@@ -216,31 +194,27 @@ const styles = `
   }
   .items-table tr:last-child td { border-bottom: none; }
   .items-table td:last-child { text-align: right; }
-
+  .item-cell { display: flex; align-items: center; gap: 10px; }
   .item-thumb {
     width: 32px; height: 32px;
     background: #f5f5f5; border: 1px solid #eee;
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.55rem; color: #ccc; font-weight: 700;
-    letter-spacing: 0.05em; flex-shrink: 0; margin-right: 10px;
+    font-size: 0.55rem; color: #ccc; font-weight: 700; flex-shrink: 0;
   }
-  .item-cell { display: flex; align-items: center; }
   .item-name { font-weight: 600; }
-  .item-id   { font-size: 0.65rem; color: #bbb; margin-top: 1px; }
-
+  .item-sub  { font-size: 0.65rem; color: #bbb; margin-top: 1px; }
   .no-items {
-    font-size: 0.78rem; color: #ccc;
-    padding: 12px 0; text-align: center;
-    letter-spacing: 0.06em; text-transform: uppercase;
+    font-size: 0.78rem; color: #ccc; padding: 12px 0;
+    text-align: center; letter-spacing: 0.06em; text-transform: uppercase;
   }
 
-  /* timeline */
+  /* Timeline */
   .date-entry { display: flex; flex-direction: column; gap: 2px; }
-  .date-lbl   { font-size: 0.62rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.1em; }
-  .date-val   { font-weight: 600; font-size: 0.85rem; }
-  .date-time  { font-size: 0.68rem; color: #aaa; }
+  .date-lbl { font-size: 0.62rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.1em; }
+  .date-val  { font-size: 0.85rem; font-weight: 600; }
+  .date-time { font-size: 0.68rem; color: #aaa; }
 
-  /* ── Status Dropdown ── */
+  /* Status Dropdown */
   .status-dropdown-wrap { position: relative; }
 
   .status-btn {
@@ -311,9 +285,9 @@ const styles = `
     animation: blink 0.7s ease-in-out infinite alternate;
   }
   @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
-  .status-error { font-size: 0.65rem; color: #c0392b; letter-spacing: 0.05em; margin-top: 4px; text-align: right; }
+  .status-error { font-size: 0.65rem; color: #c0392b; margin-top: 4px; text-align: right; }
 
-  /* Loading */
+  /* Loading / Error */
   .loading-wrap {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -337,15 +311,13 @@ const styles = `
     font-family: 'Playfair Display', serif;
     text-align: center; padding: 24px;
   }
-  .center-wrap .big { font-size: clamp(1.1rem,4vw,1.4rem); font-weight: 700; color: #111; }
+  .center-wrap .big   { font-size: clamp(1.1rem,4vw,1.4rem); font-weight: 700; color: #111; }
   .center-wrap .small { font-size: 0.78rem; color: #ccc; letter-spacing: 0.06em; }
 
   @media (max-width: 600px) {
     .orders-header { padding: 28px 16px 18px; }
     .orders-list   { padding: 0 16px 60px; }
     .panel-grid    { grid-template-columns: 1fr; }
-    .meta-amount, .meta-pill { display: none; }
-    .order-id { font-size: 0.9rem; }
   }
 `;
 
@@ -374,14 +346,14 @@ function normaliseStatus(raw) {
 
 function avatarChar(email) { return (email || "?").charAt(0).toUpperCase(); }
 
+// Derive a readable display name from an email address
 function emailToName(email) {
   if (!email) return "Unknown";
   const local = email.split("@")[0];
-  return local
-    .replace(/[._\-+]/g, " ").replace(/\d+/g, "").trim()
-    .split(" ").filter(Boolean)
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-    .join(" ") || email;
+  const cleaned = local.replace(/[._\-+]/g, " ").replace(/\d+/g, "").trim();
+  const words = cleaned.split(" ").filter(Boolean);
+  if (words.length === 0) return email;
+  return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 }
 
 /* ── Status Dropdown ── */
@@ -454,26 +426,13 @@ function OrderCard({ order, token }) {
 
   return (
     <div className="order-card">
-      {/* Always-visible summary row */}
+
+      {/* ── Summary row: only order number, customer name, status ── */}
       <div className="order-summary" onClick={() => setOpen((o) => !o)}>
-        <div className="order-meta-strip">
+
+        <div className="order-left">
           <p className="order-id">#{order.id}</p>
-
-          <span className="meta-pill">
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M2 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4zm2 0v.217l4 2.667 4-2.667V4H4zm8 1.917-3.75 2.5a.5.5 0 0 1-.5 0L4 5.917V12h8V5.917z"/>
-            </svg>
-            {order.customerEmail}
-          </span>
-
-          <span className="meta-pill">
-            <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-            </svg>
-            {date}
-          </span>
-
-          <span className="meta-amount">{formatAmount(order.total)}</span>
+          <span className="order-name">{name}</span>
         </div>
 
         <div className="order-controls" onClick={(e) => e.stopPropagation()}>
@@ -485,7 +444,7 @@ function OrderCard({ order, token }) {
         </div>
       </div>
 
-      {/* Expanded detail panel */}
+      {/* ── Expanded panel ── */}
       {open && (
         <div className="order-panel" onClick={(e) => e.stopPropagation()}>
           <div className="panel-grid">
@@ -515,11 +474,11 @@ function OrderCard({ order, token }) {
               </div>
             </div>
 
-            {/* Items — renders if items array present, otherwise shows note */}
+            {/* Items */}
             <div className="panel-section full">
               <p className="section-label">Items</p>
               {!order.items || order.items.length === 0 ? (
-                <p className="no-items">No item details in this response</p>
+                <p className="no-items">No item details available</p>
               ) : (
                 <table className="items-table">
                   <thead>
@@ -537,7 +496,7 @@ function OrderCard({ order, token }) {
                             <div className="item-thumb">IMG</div>
                             <div>
                               <div className="item-name">{item.product?.name || `Product #${item.productId}`}</div>
-                              <div className="item-id">ID: {item.productId}</div>
+                              <div className="item-sub">ID: {item.productId}</div>
                             </div>
                           </div>
                         </td>
