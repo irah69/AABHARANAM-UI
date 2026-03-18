@@ -19,11 +19,8 @@ export default function ProductCard({ product }) {
       ? product.imageUrls.split(',').map(url => url.trim()).filter(url => url.length > 0)[0]
       : '/saree2.png');
   const categoryName = product.category?.name || product.categoryName || product.category || '';
-  const originalPrice = product.originalPrice;
-  const discount =
-    typeof originalPrice === 'number' && originalPrice > product.price
-      ? Math.round(((originalPrice - product.price) / originalPrice) * 100)
-      : 0;
+  const discount = typeof product.discount === 'number' ? product.discount : Number(product.discount) || 0;
+  const finalPrice = product.price && discount > 0 ? (product.price - (product.price * discount / 100)) : product.price;
 
   const handleAddToCart = () => {
     addToCart(product.id, quantity);
@@ -84,11 +81,18 @@ export default function ProductCard({ product }) {
         {/* Price */}
         <div className="mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-base font-semibold text-gray-900">₹{product.price.toLocaleString()}</span>
-            {product.originalPrice > product.price && (
-              <span className="text-xs text-gray-500 line-through">
-                ₹{product.originalPrice.toLocaleString()}
-              </span>
+            <span className="text-base font-semibold text-gray-900">
+              ₹{finalPrice.toLocaleString()}
+            </span>
+            {discount > 0 && (
+              <>
+                <span className="text-xs text-gray-500 line-through">
+                  ₹{product.price.toLocaleString()}
+                </span>
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+                  {discount}% OFF
+                </span>
+              </>
             )}
           </div>
         </div>

@@ -52,15 +52,8 @@ export default function ProductDetailsContent({ product }) {
     fetchReviews();
   }, [fetchReviews]);
 
-  const discountPercent = useMemo(() => {
-    const base = Number(product.id) || 0;
-    return (base % 40) + 10;
-  }, [product.id]);
-
-  const originalPrice = useMemo(
-    () => Math.floor(product.price * (1 + discountPercent / 100)),
-    [product.price, discountPercent]
-  );
+  const discount = typeof product.discount === 'number' ? product.discount : Number(product.discount) || 0;
+  const finalPrice = product.price && discount > 0 ? (product.price - (product.price * discount / 100)) : product.price;
 
   const images = Array.isArray(product.imageUrls)
     ? product.imageUrls
@@ -163,14 +156,18 @@ export default function ProductDetailsContent({ product }) {
             <div className="bg-gradient-to-br from-orange-50 to-orange-100/40 rounded-xl p-4">
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <span className="text-2xl sm:text-3xl font-extrabold text-red-500">
-                  ₹{product.price.toLocaleString()}
+                  ₹{finalPrice.toLocaleString()}
                 </span>
-                <span className="text-base text-gray-400 line-through">
-                  ₹{originalPrice.toLocaleString()}
-                </span>
-                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
-                  {discountPercent}% OFF
-                </span>
+                {discount > 0 && (
+                  <>
+                    <span className="text-base text-gray-400 line-through">
+                      ₹{product.price.toLocaleString()}
+                    </span>
+                    <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+                      {discount}% OFF
+                    </span>
+                  </>
+                )}
               </div>
               <p className="text-xs text-gray-500">inclusive of all taxes</p>
             </div>

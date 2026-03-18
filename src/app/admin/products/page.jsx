@@ -19,6 +19,7 @@ export default function AdminProductsPage() {
     name: "",
     description: "",
     price: "",
+    discount: "",
     stockQuantity: "",
     imageUrls: "",
     categoryId: "",
@@ -72,6 +73,13 @@ export default function AdminProductsPage() {
     e.preventDefault();
     setError("");
 
+    // Validate discount
+    const discountValue = form.discount === "" ? 0 : Number(form.discount);
+    if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
+      setError("Discount must be a number between 0 and 100.");
+      return;
+    }
+
     // Safe conversion: string or array to array
     const imageUrlsArray = Array.isArray(form.imageUrls)
       ? form.imageUrls
@@ -84,6 +92,7 @@ export default function AdminProductsPage() {
       name: form.name,
       description: form.description,
       price: Number(form.price),
+      discount: discountValue,
       stockQuantity: Number(form.stockQuantity),
       imageUrls: imageUrlsArray,
       categoryId: Number(form.categoryId),
@@ -99,6 +108,7 @@ export default function AdminProductsPage() {
         name: "",
         description: "",
         price: "",
+        discount: "",
         stockQuantity: "",
         imageUrls: "",
         categoryId: "",
@@ -236,6 +246,7 @@ export default function AdminProductsPage() {
                     name: "",
                     description: "",
                     price: "",
+                    discount: "",
                     stockQuantity: "",
                     imageUrls: "",
                     categoryId: "",
@@ -259,62 +270,70 @@ export default function AdminProductsPage() {
                   <th className="text-left p-3">ID</th>
                   <th className="text-left p-3">Name</th>
                   <th className="text-left p-3">Price</th>
+                  <th className="text-left p-3">Discount (%)</th>
+                  <th className="text-left p-3">Final Price</th>
                   <th className="text-left p-3">Stock</th>
                   <th className="text-left p-3">Category</th>
                   <th className="text-left p-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {pageData.items.map((p) => (
-                  <tr key={p.id} className="border-t border-gray-200">
-                    <td className="p-3">{p.id}</td>
-                    <td className="p-3">{p.name}</td>
-                    <td className="p-3">₹{p.price}</td>
-                    <td className="p-3">{p.stockQuantity ?? "—"}</td>
-                    <td className="p-3">
-                      {p.category?.name ||
-                        p.categoryName ||
-                        p.categoryId ||
-                        "—"}
-                    </td>
-                    <td className="p-3">
-                      <div className="flex gap-3">
-                        <button
-                          onClick={() => {
-                            setEditingId(p.id);
-                            setForm({
-                              name: p.name || "",
-                              description: p.description || "",
-                              price: String(p.price ?? ""),
-                              stockQuantity: String(p.stockQuantity ?? ""),
-                              imageUrls: Array.isArray(p.imageUrls)
-                                ? p.imageUrls.join(", ")
-                                : (typeof p.imageUrls === "string" ? p.imageUrls : ""),
-                              categoryId: String(p.categoryId ?? p.category?.id ?? ""),
-                            });
-                          }}
-                          className="underline"
-                        >
-                          Edit
-                        </button>
-
-                        <button
-                          onClick={async () => {
-                            setError("");
-                            try {
-                              await deleteMutation.mutateAsync(p.id);
-                            } catch (err) {
-                              setError(err?.message || "Failed to delete product.");
-                            }
-                          }}
-                          className="underline text-red-700"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
+                {pageData.items.map((p) => {
+                  const discount = typeof p.discount === "number" ? p.discount : Number(p.discount) || 0;
+                  const finalPrice = p.price && discount > 0 ? (p.price - (p.price * discount / 100)) : p.price;
+                  return (
+                    <tr key={p.id} className="border-t border-gray-200">
+                      <td className="p-3">{p.id}</td>
+                      <td className="p-3">{p.name}</td>
+                      <td className="p-3">₹{p.price}</td>
+                      <td className="p-3">{discount > 0 ? `${discount}%` : "—"}</td>
+                      <td className="p-3">₹{finalPrice}</td>
+                      <td className="p-3">{p.stockQuantity ?? "—"}</td>
+                      <td className="p-3">
+                        {p.category?.name ||
+                          p.categoryName ||
+                          p.categoryId ||
+                          "—"}
+                      </td>
+                      <td className="p-3">
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => {
+                              setEditingId(p.id);
+                              setForm({
+                                name: p.name || "",
+                                description: p.description || "",
+                                price: String(p.price ?? ""),
+                                discount: typeof p.discount === "number" ? String(p.discount) : (p.discount || ""),
+                                stockQuantity: String(p.stockQuantity ?? ""),
+                                imageUrls: Array.isArray(p.imageUrls)
+                                  ? p.imageUrls.join(", ")
+                                  : (typeof p.imageUrls === "string" ? p.imageUrls : ""),
+                                categoryId: String(p.categoryId ?? p.category?.id ?? ""),
+                              });
+                            }}
+                            className="underline"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={async () => {
+                              setError("");
+                              try {
+                                await deleteMutation.mutateAsync(p.id);
+                              } catch (err) {
+                                setError(err?.message || "Failed to delete product.");
+                              }
+                            }}
+                            className="underline text-red-700"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
                   </tr>
-                ))}
+                );
+                })}
               </tbody>
             </table>
           </div>

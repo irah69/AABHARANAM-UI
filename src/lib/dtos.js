@@ -11,6 +11,7 @@
  * @property {string} name
  * @property {string} [description]
  * @property {number} price
+ * @property {number} discount
  * @property {number} [stockQuantity]
  * @property {string} [imageUrls]
  * @property {number} [categoryId]
