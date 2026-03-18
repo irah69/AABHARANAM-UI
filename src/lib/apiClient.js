@@ -1,314 +1,126 @@
-// Product Ratings API
-export const ratingsApi = {
-  rateProduct: async (productId, { rating, description }, token, signal) => {
-    return apiRequest(`/ratings/product/${productId}`, {
-      method: 'POST',
-      token,
-      query: { rating, description },
-      signal,
-      // No Content-Type header, no body
-    });
-  },
-  getProductRatings: async (productId, signal) => {
-    return apiRequest(`/ratings/product/${productId}`, {
-      method: 'GET',
-      signal,
-    });
-  },
-};
-import { ApiError } from "@/lib/apiError";
+"use client";
 
-/**
- * @param {string} path - path under API prefix, e.g. "/products"
- * @param {{
- *   method?: string,
- *   token?: string | null,
- *   query?: Record<string, any>,
- *   body?: any,
- *   signal?: AbortSignal,
- *   headers?: Record<string, string>
- * }} [options]
- */
-export async function apiRequest(path, options = {}) {
-  const {
-    method = options.body ? "POST" : "GET",
-    token = null,
-    query,
-    body,
-    signal,
-    headers = {},
-  } = options;
+import React, { useEffect, useState } from "react";
+import { adminApi } from "@/lib/apiClient";
+import { useAuth } from "@/context/AuthContext";
 
-  // Use environment variable or fallback for local dev
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [statusUpdating, setStatusUpdating] = useState({});
+  const { accessToken } = useAuth();
 
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined in environment variables");
-  }
+  useEffect(() => {
+    setLoading(true);
+    adminApi
+      .getOrders({ token: accessToken })
+      .then(data => {
+        // handle both array and { orders: [] } shape
+        setOrders(Array.isArray(data) ? data : data.orders || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message || "Failed to fetch orders.");
+        setLoading(false);
+      });
+  }, [accessToken]);
 
-  const url = new URL(`${baseUrl}${path}`);
+  const statusOptions = ["PENDING", "PAID", "ISSUE", "OUT OF STOCK", "CANCELLED"];
 
-  // Attach query params
-  if (query) {
-    for (const [key, value] of Object.entries(query)) {
-      if (value === undefined || value === null || value === "") continue;
-      url.searchParams.set(key, String(value));
+  const handleStatusUpdate = async (orderId, newStatus) => {
+    setStatusUpdating(prev => ({ ...prev, [orderId]: true }));
+    try {
+      await adminApi.updateOrderStatus(accessToken, orderId, newStatus);
+      setOrders(prev =>
+        prev.map(order =>
+          order.id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+    } catch (err) {
+      alert(err?.message || "Failed to update status.");
+    } finally {
+      setStatusUpdating(prev => ({ ...prev, [orderId]: false }));
     }
-  }
-
-  const requestHeaders = {
-    Accept: "application/json",
-    ...headers,
   };
 
+  if (loading) return <div className="p-6">Loading orders...</div>;
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
-  // Detect if body is URLSearchParams (form data) or string (for x-www-form-urlencoded)
-  const isFormBody = body instanceof URLSearchParams || typeof body === "string";
-  const hasJsonBody =
-    body !== undefined &&
-    body !== null &&
-    !(body instanceof FormData) &&
-    !isFormBody;
+  return (
+    <section className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Admin Orders ({orders.length})</h1>
 
-  // Only set Content-Type for JSON if not already set
-  if (hasJsonBody && !requestHeaders["Content-Type"]) {
-    requestHeaders["Content-Type"] = "application/json";
-  }
+      {orders.length === 0 ? (
+        <div>No orders found.</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-100 text-left">
+                <th className="border px-3 py-2">Order ID</th>
+                <th className="border px-3 py-2">Customer</th>
+                <th className="border px-3 py-2">Date</th>
+                <th className="border px-3 py-2">Total</th>
+                <th className="border px-3 py-2">Items</th>
+                <th className="border px-3 py-2">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map(order => (
+                <tr key={order.id} className="hover:bg-gray-50">
+                  <td className="border px-3 py-2 font-mono">#{order.id}</td>
 
-  if (token) {
-    requestHeaders.Authorization = `Bearer ${token}`;
-  }
+                  {/* Customer — use whatever field your API returns */}
+                  <td className="border px-3 py-2">
+                    {order.user?.name || order.user?.email || order.customerEmail || "—"}
+                  </td>
 
-  const res = await fetch(url.toString(), {
-    method,
-    headers: requestHeaders,
-    body: hasJsonBody ? JSON.stringify(body) : (isFormBody ? body : undefined),
-    signal,
-    cache: "no-store",
-  });
+                  <td className="border px-3 py-2">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </td>
 
-  const contentType = res.headers.get("content-type") || "";
-  const isJson = contentType.includes("application/json");
+                  <td className="border px-3 py-2">₹{order.total}</td>
 
-  const payload = isJson
-    ? await res.json().catch(() => null)
-    : await res.text().catch(() => "");
+                  {/* Items */}
+                  <td className="border px-3 py-2">
+                    {order.items?.length > 0 ? (
+                      <ul className="list-disc ml-3 space-y-0.5">
+                        {order.items.map(item => (
+                          <li key={item.id}>
+                            {item.product?.name || `Product #${item.productId}`} ×{item.quantity}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span className="text-gray-400 text-xs">
+                        No items (add <code>include: items</code> in backend)
+                      </span>
+                    )}
+                  </td>
 
-  if (!res.ok) {
-    const message =
-      (payload &&
-        typeof payload === "object" &&
-        (payload.message || payload.error)) ||
-      (typeof payload === "string" && payload) ||
-      `Request failed (${res.status})`;
-
-    throw new ApiError(String(message), {
-      status: res.status,
-      details: payload,
-    });
-  }
-
-  return payload;
+                  {/* ✅ Status dropdown — always visible, no accordion needed */}
+                  <td className="border px-3 py-2">
+                    <select
+                      value={order.status}
+                      onChange={e => handleStatusUpdate(order.id, e.target.value)}
+                      disabled={statusUpdating[order.id]}
+                      className="border rounded px-2 py-1 text-sm bg-white disabled:opacity-50 cursor-pointer"
+                    >
+                      {statusOptions.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                    {statusUpdating[order.id] && (
+                      <span className="text-xs text-gray-400 ml-1">saving…</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
+  );
 }
-
-/* ============================= */
-/*          PUBLIC API           */
-/* ============================= */
-
-export const publicApi = {
-  getCategories: (signal) =>
-    apiRequest("/categories", { signal }),
-
-  getCategory: (id, signal) =>
-    apiRequest(`/categories/${id}`, { signal }),
-
-  getProducts: (
-    { page = 0, size = 12, sort = "createdAt,desc" } = {},
-    signal
-  ) =>
-    apiRequest("/products", {
-      query: { page, size, sort },
-      signal,
-    }),
-
-  getProduct: (id, signal) =>
-    apiRequest(`/products/${id}`, { signal }),
-
-  searchProducts: (
-    {
-      categoryId,
-      q,
-      minPrice,
-      maxPrice,
-      inStock,
-      page = 0,
-      size = 12,
-      sort = "createdAt,desc",
-    } = {},
-    signal
-  ) =>
-    apiRequest("/products/search", {
-      query: {
-        categoryId,
-        q,
-        minPrice,
-        maxPrice,
-        inStock,
-        page,
-        size,
-        sort,
-      },
-      signal,
-    }),
-};
-
-/* ============================= */
-/*           AUTH API            */
-/* ============================= */
-
-export const authApi = {
-  register: (body, signal) =>
-    apiRequest("/auth/register", {
-      method: "POST",
-      body,
-      signal,
-    }),
-
-  login: (body, signal) =>
-    apiRequest("/auth/login", {
-      method: "POST",
-      body,
-      signal,
-    }),
-};
-
-/* ============================= */
-/*           USER API            */
-/* ============================= */
-
-export const userApi = {
-  getCart: (token, signal) =>
-    apiRequest("/cart", { token, signal }),
-
-  addCartItem: (token, body, signal) =>
-    apiRequest("/cart/items", {
-      method: "POST",
-      token,
-      body,
-      signal,
-    }),
-
-  patchCartItem: (token, productId, body, signal) =>
-    apiRequest(`/cart/items/${productId}`, {
-      method: "PATCH",
-      token,
-      body,
-      signal,
-    }),
-
-  deleteCartItem: (token, productId, signal) =>
-    apiRequest(`/cart/items/${productId}`, {
-      method: "DELETE",
-      token,
-      signal,
-    }),
-
-  checkout: (token, body, signal) =>
-    apiRequest("/cart/checkout", {
-      method: "POST",
-      token,
-      body,
-      signal,
-    }),
-
-  getOrders: ({ token, page = 0, size = 10 } = {}, signal) =>
-    apiRequest("/orders", {
-      token,
-      query: { page, size },
-      signal,
-    }),
-};
-
-/* ============================= */
-/*           ADMIN API           */
-/* ============================= */
-
-export const adminApi = {
-    updateOrderStatus: (token, orderId, status, signal) =>
-      apiRequest(`/admin/orders/${orderId}/status`, {
-        method: "PUT",
-        token,
-        body: { status },
-        signal,
-      }),
-  getDashboard: (token, signal) =>
-    apiRequest("/admin/dashboard", { token, signal }),
-
-  getUsers: ({ token, page = 0, size = 20 } = {}, signal) =>
-    apiRequest("/admin/users", {
-      token,
-      query: { page, size },
-      signal,
-    }),
-
-  createCategory: (token, body, signal) =>
-    apiRequest("/admin/categories", {
-      method: "POST",
-      token,
-      body,
-      signal,
-    }),
-
-  updateCategory: (token, id, body, signal) =>
-    apiRequest(`/admin/categories/${id}`, {
-      method: "PUT",
-      token,
-      body,
-      signal,
-    }),
-
-  deleteCategory: (token, id, signal) =>
-    apiRequest(`/admin/categories/${id}`, {
-      method: "DELETE",
-      token,
-      signal,
-    }),
-
-  createProduct: (token, body, signal) =>
-    apiRequest("/admin/products", {
-      method: "POST",
-      token,
-      body,
-      signal,
-    }),
-
-  updateProduct: (token, id, body, signal) =>
-    apiRequest(`/admin/products/${id}`, {
-      method: "PUT",
-      token,
-      body,
-      signal,
-    }),
-
-  deleteProduct: (token, id, signal) =>
-    apiRequest(`/admin/products/${id}`, {
-      method: "DELETE",
-      token,
-      signal,
-    }),
-  getContactUs: (token, signal) =>
-    apiRequest("/admin/contactus", {
-      token,
-      signal,
-    }),
-  getSales: (token, signal) =>
-    apiRequest("/admin/sales", {
-      token,
-      signal,
-    }),
-  getOrders: ({ token }, signal) =>
-    apiRequest("/admin/orders", {
-      token,
-      signal,
-    }),
-};
