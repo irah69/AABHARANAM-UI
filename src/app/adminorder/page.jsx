@@ -1,6 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
+const STATUS_OPTIONS = [
+  { value: "PENDING",    label: "Pending",    cls: "pending" },
+  { value: "PAID",       label: "Paid",       cls: "paid" },
+  { value: "PROCESSING", label: "Processing", cls: "processing" },
+  { value: "SHIPPED",    label: "Shipped",    cls: "shipped" },
+  { value: "DELIVERED",  label: "Delivered",  cls: "delivered" },
+  { value: "CANCELLED",  label: "Cancelled",  cls: "cancelled" },
+  { value: "ISSUE",      label: "Issue",      cls: "issue" },
+];
 
 const styles = `
   @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
@@ -48,15 +58,6 @@ const styles = `
   .order-card {
     border-bottom: 1px solid #e8e8e8;
     padding: 24px 0;
-    cursor: pointer;
-    transition: padding 0.15s, background 0.15s;
-  }
-
-  .order-card:hover {
-    background: #fafafa;
-    margin: 0 -24px;
-    padding-left: 24px;
-    padding-right: 24px;
   }
 
   .order-top {
@@ -64,6 +65,7 @@ const styles = `
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
+    cursor: pointer;
   }
 
   .order-left { flex: 1; min-width: 0; }
@@ -102,21 +104,120 @@ const styles = `
     flex-shrink: 0;
   }
 
-  .order-status {
-    display: inline-block;
-    padding: 4px 12px;
+  /* ── Status Dropdown ── */
+  .status-dropdown-wrap {
+    position: relative;
+  }
+
+  .status-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 12px;
+    font-family: 'Playfair Display', serif;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: opacity 0.15s;
+    user-select: none;
   }
 
-  .order-status.delivered  { background: #111; color: #fff; }
-  .order-status.pending    { border: 1px solid #111; background: #fff; color: #111; }
-  .order-status.processing { border: 1px solid #bbb; background: #f5f5f5; color: #555; }
-  .order-status.cancelled  { border: 1px solid #ddd; background: #fff; color: #bbb; }
+  .status-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
+  .status-btn .caret {
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.18s;
+    flex-shrink: 0;
+    margin-top: -2px;
+  }
+
+  .status-btn.open .caret { transform: rotate(-135deg); margin-top: 2px; }
+
+  .status-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 99;
+    background: #fff;
+    border: 1.5px solid #111;
+    min-width: 148px;
+    box-shadow: 4px 4px 0 #111;
+    animation: menuIn 0.14s ease;
+  }
+
+  @keyframes menuIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .status-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.1s;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .status-option:hover { background: #f5f5f5; }
+  .status-option.active { background: #111; color: #fff; }
+  .status-option.active .dot { background: #fff; }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* dot colours */
+  .dot-pending    { background: #888; }
+  .dot-paid       { background: #2d7a2d; }
+  .dot-processing { background: #b07d00; }
+  .dot-shipped    { background: #1a5eb8; }
+  .dot-delivered  { background: #111; }
+  .dot-cancelled  { background: #ccc; }
+  .dot-issue      { background: #c0392b; }
+
+  /* btn colours */
+  .btn-delivered  { background: #111; color: #fff; }
+  .btn-paid       { background: #2d7a2d; color: #fff; }
+  .btn-pending    { border: 1px solid #111; background: #fff; color: #111; }
+  .btn-processing { border: 1px solid #b07d00; background: #fffbf0; color: #b07d00; }
+  .btn-shipped    { border: 1px solid #1a5eb8; background: #f0f5ff; color: #1a5eb8; }
+  .btn-cancelled  { border: 1px solid #ddd; background: #fff; color: #bbb; }
+  .btn-issue      { background: #c0392b; color: #fff; }
+
+  /* saving spinner */
+  .saving-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: blink 0.7s ease-in-out infinite alternate;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink { from { opacity: 0.2; } to { opacity: 1; } }
+
+  /* expand */
   .chevron {
     width: 9px;
     height: 9px;
@@ -206,6 +307,15 @@ const styles = `
     letter-spacing: 0;
   }
 
+  /* error toast */
+  .status-error {
+    font-size: 0.68rem;
+    color: #c0392b;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+    text-align: right;
+  }
+
   /* Loading */
   .loading-wrap {
     display: flex;
@@ -235,7 +345,6 @@ const styles = `
     color: #bbb;
   }
 
-  /* Error / Empty */
   .center-wrap {
     display: flex;
     flex-direction: column;
@@ -251,26 +360,11 @@ const styles = `
   .center-wrap .big { font-size: clamp(1.1rem,4vw,1.4rem); font-weight: 700; color: #111; }
   .center-wrap .small { font-size: 0.78rem; color: #ccc; letter-spacing: 0.06em; }
 
-  /* Mobile */
   @media (max-width: 480px) {
     .orders-header { padding: 28px 16px 18px; }
     .orders-list   { padding: 0 16px 60px; }
-    .order-card:hover {
-      margin: 0 -16px;
-      padding-left: 16px;
-      padding-right: 16px;
-    }
   }
 `;
-
-function statusClass(status) {
-  if (!status) return "pending";
-  const s = status.toLowerCase();
-  if (s.includes("deliver") || s.includes("complet")) return "delivered";
-  if (s.includes("cancel")) return "cancelled";
-  if (s.includes("process") || s.includes("ship")) return "processing";
-  return "pending";
-}
 
 function formatDate(d) {
   if (!d) return "—";
@@ -281,14 +375,90 @@ function formatDate(d) {
   } catch { return d; }
 }
 
-function OrderCard({ order }) {
+function normaliseStatus(raw) {
+  if (!raw) return "PENDING";
+  const up = raw.toUpperCase();
+  return STATUS_OPTIONS.find((o) => o.value === up)?.value ?? "PENDING";
+}
+
+/* ── Status Dropdown ── */
+function StatusDropdown({ orderId, initial, token }) {
+  const [current, setCurrent] = useState(normaliseStatus(initial));
+  const [open, setOpen]       = useState(false);
+  const [saving, setSaving]   = useState(false);
+  const [err, setErr]         = useState(null);
+  const ref = useRef(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+
+  const choose = async (value) => {
+    setOpen(false);
+    if (value === current) return;
+    setSaving(true);
+    setErr(null);
+    try {
+      const { adminApi } = await import("@/lib/apiClient");
+      await adminApi.updateOrderStatus(token, orderId, value);
+      setCurrent(value);
+    } catch (e) {
+      setErr(e.message || "Failed to update");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const opt = STATUS_OPTIONS.find((o) => o.value === current) ?? STATUS_OPTIONS[0];
+
+  return (
+    <div ref={ref} className="status-dropdown-wrap">
+      <button
+        className={`status-btn btn-${opt.cls} ${open ? "open" : ""}`}
+        onClick={(e) => { e.stopPropagation(); if (!saving) setOpen((v) => !v); }}
+        disabled={saving}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        {saving ? <span className="saving-dot" /> : <span className={`dot dot-${opt.cls}`} />}
+        {saving ? "Saving…" : opt.label}
+        {!saving && <span className="caret" />}
+      </button>
+
+      {err && <p className="status-error">{err}</p>}
+
+      {open && (
+        <div className="status-menu" role="listbox">
+          {STATUS_OPTIONS.map((o) => (
+            <button
+              key={o.value}
+              role="option"
+              aria-selected={o.value === current}
+              className={`status-option ${o.value === current ? "active" : ""}`}
+              onClick={(e) => { e.stopPropagation(); choose(o.value); }}
+            >
+              <span className={`dot dot-${o.cls}`} />
+              {o.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Order Card ── */
+function OrderCard({ order, token }) {
   const [open, setOpen] = useState(false);
-  const sc = statusClass(order.status);
   const avatar = (order.user?.name || order.user?.email || "?").charAt(0).toUpperCase();
 
   return (
-    <div className="order-card" onClick={() => setOpen((o) => !o)}>
-      <div className="order-top">
+    <div className="order-card">
+      <div className="order-top" onClick={() => setOpen((o) => !o)}>
         <div className="order-left">
           <div className="order-id-row">
             <p className="order-id">Order #{order.id}</p>
@@ -301,8 +471,13 @@ function OrderCard({ order }) {
             )}
           </p>
         </div>
-        <div className="order-right">
-          <span className={`order-status ${sc}`}>{order.status || "Pending"}</span>
+
+        <div className="order-right" onClick={(e) => e.stopPropagation()}>
+          <StatusDropdown
+            orderId={order.id}
+            initial={order.status}
+            token={token}
+          />
         </div>
       </div>
 
@@ -334,15 +509,18 @@ function OrderCard({ order }) {
   );
 }
 
+/* ── Page ── */
 export default function AdminOrderPage() {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders]   = useState([]);
+  const [token, setToken]     = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError]     = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const t = localStorage.getItem("token");
+    setToken(t);
     import("@/lib/apiClient").then(({ adminApi }) => {
-      adminApi.getOrders({ token }, undefined)
+      adminApi.getOrders({ token: t }, undefined)
         .then((data) => { setOrders(data || []); setLoading(false); })
         .catch((err) => { setError(err.message); setLoading(false); });
     });
@@ -393,7 +571,7 @@ export default function AdminOrderPage() {
             </div>
           ) : (
             orders.map((order) => (
-              <OrderCard key={order.id} order={order} />
+              <OrderCard key={order.id} order={order} token={token} />
             ))
           )}
         </div>
