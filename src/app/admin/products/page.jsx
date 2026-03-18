@@ -12,6 +12,7 @@ export default function AdminProductsPage() {
   const { accessToken } = useAuth();
 
   const [page, setPage] = useState(0);
+  const [search, setSearch] = useState("");
   const size = 20;
 
   const [editingId, setEditingId] = useState(null);
@@ -37,9 +38,13 @@ export default function AdminProductsPage() {
   }, [categoriesQuery.data]);
 
   const productsQuery = useQuery({
-    queryKey: ["products", { page, size }],
-    queryFn: ({ signal }) =>
-      publicApi.getProducts({ page, size, sort: "createdAt,desc" }, signal),
+    queryKey: ["products", { page, size, search }],
+    queryFn: ({ signal }) => {
+      if (search && search.trim() !== "") {
+        return publicApi.searchProducts({ q: search, page, size, sort: "createdAt,desc" }, signal);
+      }
+      return publicApi.getProducts({ page, size, sort: "createdAt,desc" }, signal);
+    },
     placeholderData: (prev) => prev,
   });
 
@@ -275,83 +280,130 @@ export default function AdminProductsPage() {
           </div>
         </form>
 
+        {/* Search bar */}
+        <div className="mb-4 w-full max-w-2xl flex items-center gap-2">
+          <input
+            type="text"
+            value={search}
+            onChange={e => {
+              setSearch(e.target.value);
+              setPage(0);
+            }}
+            placeholder="Search products by name, description, etc."
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="px-3 py-2 border border-gray-300 rounded-lg"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         {productsQuery.isLoading ? (
           <div className="text-gray-600">Loading…</div>
         ) : (
-          <div className="overflow-auto border border-gray-200 rounded-lg">
-            <table className="min-w-[1000px] w-full text-sm">
-              <thead className="bg-gray-50 text-gray-700">
-                <tr>
-                  <th className="text-left p-3">ID</th>
-                  <th className="text-left p-3">Name</th>
-                  <th className="text-left p-3">Price</th>
-                  <th className="text-left p-3">Discount (%)</th>
-                  <th className="text-left p-3">Final Price</th>
-                  <th className="text-left p-3">Stock</th>
-                  <th className="text-left p-3">Category</th>
-                  <th className="text-left p-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pageData.items.map((p) => {
-                  const discount = typeof p.discount === "number" ? p.discount : Number(p.discount) || 0;
-                  const finalPrice = p.price && discount > 0 ? (p.price - (p.price * discount / 100)) : p.price;
-                  return (
-                    <tr key={p.id} className="border-t border-gray-200">
-                      <td className="p-3">{p.id}</td>
-                      <td className="p-3">{p.name}</td>
-                      <td className="p-3">₹{p.price}</td>
-                      <td className="p-3">{discount > 0 ? `${discount}%` : "—"}</td>
-                      <td className="p-3">₹{finalPrice}</td>
-                      <td className="p-3">{p.stockQuantity ?? "—"}</td>
-                      <td className="p-3">
-                        {p.category?.name ||
-                          p.categoryName ||
-                          p.categoryId ||
-                          "—"}
-                      </td>
-                      <td className="p-3">
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() => {
-                              setEditingId(p.id);
-                              setForm({
-                                name: p.name || "",
-                                description: p.description || "",
-                                price: String(p.price ?? ""),
-                                discount: typeof p.discount === "number" ? String(p.discount) : (p.discount || ""),
-                                stockQuantity: String(p.stockQuantity ?? ""),
-                                imageUrls: Array.isArray(p.imageUrls)
-                                  ? p.imageUrls.join(", ")
-                                  : (typeof p.imageUrls === "string" ? p.imageUrls : ""),
-                                categoryId: String(p.categoryId ?? p.category?.id ?? ""),
-                              });
-                            }}
-                            className="underline"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={async () => {
-                              setError("");
-                              try {
-                                await deleteMutation.mutateAsync(p.id);
-                              } catch (err) {
-                                setError(err?.message || "Failed to delete product.");
-                              }
-                            }}
-                            className="underline text-red-700"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
+          <>
+            <div className="overflow-auto border border-gray-200 rounded-lg">
+              <table className="min-w-[1000px] w-full text-sm">
+                <thead className="bg-gray-50 text-gray-700">
+                  <tr>
+                    <th className="text-left p-3">ID</th>
+                    <th className="text-left p-3">Name</th>
+                    <th className="text-left p-3">Price</th>
+                    <th className="text-left p-3">Discount (%)</th>
+                    <th className="text-left p-3">Final Price</th>
+                    <th className="text-left p-3">Stock</th>
+                    <th className="text-left p-3">Category</th>
+                    <th className="text-left p-3">Actions</th>
                   </tr>
-                );
-                })}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {pageData.items.map((p) => {
+                    const discount = typeof p.discount === "number" ? p.discount : Number(p.discount) || 0;
+                    const finalPrice = p.price && discount > 0 ? (p.price - (p.price * discount / 100)) : p.price;
+                    return (
+                      <tr key={p.id} className="border-t border-gray-200">
+                        <td className="p-3">{p.id}</td>
+                        <td className="p-3">{p.name}</td>
+                        <td className="p-3">₹{p.price}</td>
+                        <td className="p-3">{discount > 0 ? `${discount}%` : "—"}</td>
+                        <td className="p-3">₹{finalPrice}</td>
+                        <td className="p-3">{p.stockQuantity ?? "—"}</td>
+                        <td className="p-3">
+                          {p.category?.name ||
+                            p.categoryName ||
+                            p.categoryId ||
+                            "—"}
+                        </td>
+                        <td className="p-3">
+                          <div className="flex gap-3">
+                            <button
+                              onClick={() => {
+                                setEditingId(p.id);
+                                setForm({
+                                  name: p.name || "",
+                                  description: p.description || "",
+                                  price: String(p.price ?? ""),
+                                  discount: typeof p.discount === "number" ? String(p.discount) : (p.discount || ""),
+                                  stockQuantity: String(p.stockQuantity ?? ""),
+                                  imageUrls: Array.isArray(p.imageUrls)
+                                    ? p.imageUrls.join(", ")
+                                    : (typeof p.imageUrls === "string" ? p.imageUrls : ""),
+                                  categoryId: String(p.categoryId ?? p.category?.id ?? ""),
+                                });
+                              }}
+                              className="underline"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={async () => {
+                                setError("");
+                                try {
+                                  await deleteMutation.mutateAsync(p.id);
+                                } catch (err) {
+                                  setError(err?.message || "Failed to delete product.");
+                                }
+                              }}
+                              className="underline text-red-700"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                    </tr>
+                  );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            {/* Pagination controls */}
+            <div className="flex justify-center items-center gap-4 mt-4">
+              <button
+                type="button"
+                className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50"
+                disabled={page === 0}
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+              >
+                Previous
+              </button>
+              <span>
+                Page {page + 1} of {pageData.totalPages}
+              </span>
+              <button
+                type="button"
+                className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50"
+                disabled={page + 1 >= pageData.totalPages}
+                onClick={() => setPage((p) => (p + 1 < pageData.totalPages ? p + 1 : p))}
+              >
+                Next
+              </button>
+            </div>
+          </>
         )}
       </div>
     </RequireAdmin>
