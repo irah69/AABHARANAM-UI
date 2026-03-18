@@ -27,15 +27,22 @@ export default function AdminOrdersPage() {
       });
   }, [page]);
 
-  const statusOptions = ["PENDING", "PAID", "SHIPPED", "DELIVERED", "CANCELLED"];
+  const statusOptions = ["PENDING", "PAID", "ISSUE", "OUT OF STOCK", "CANCELLED"];
 
   const handleStatusUpdate = async (orderId, newStatus) => {
     setStatusUpdating((prev) => ({ ...prev, [orderId]: true }));
     try {
-      const res = await adminApi.updateOrderStatus(accessToken, orderId, newStatus);
-      setOrders((prevOrders) => prevOrders.map(order =>
-        order.id === orderId ? { ...order, status: res.status || newStatus } : order
-      ));
+      // ✅ Fixed: use apiRequest instead of undefined adminApi
+      const res = await apiRequest(`/admin/orders/${orderId}/status`, {
+        method: "PATCH",
+        body: { status: newStatus },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setOrders((prevOrders) =>
+        prevOrders.map(order =>
+          order.id === orderId ? { ...order, status: res.status || newStatus } : order
+        )
+      );
     } catch (err) {
       alert(err?.message || "Failed to update status.");
     } finally {
@@ -56,9 +63,14 @@ export default function AdminOrdersPage() {
           {orders.map(order => (
             <div key={order.id} className="border rounded p-4">
               <div className="font-semibold">Order #{order.id}</div>
-              <div>User: {order.user?.name || order.user?.email || "Unknown"}</div>
-              <div>Date: {order.createdAt}</div>
-              <div className="flex items-center gap-2">
+
+              {/* ✅ Safely show user info */}
+              <div>User: {order.user?.name || order.user?.email || order.customerEmail || "Unknown"}</div>
+              <div>Date: {new Date(order.createdAt).toLocaleString()}</div>
+              <div>Total: ₹{order.total}</div>
+
+              {/* ✅ Status dropdown now always renders */}
+              <div className="flex items-center gap-2 mt-2">
                 <span>Status:</span>
                 <select
                   value={order.status}
@@ -70,17 +82,27 @@ export default function AdminOrdersPage() {
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
                 </select>
-                {statusUpdating[order.id] && <span className="text-sm text-gray-500">Updating…</span>}
+                {statusUpdating[order.id] && (
+                  <span className="text-sm text-gray-500">Updating…</span>
+                )}
               </div>
+
+              {/* ✅ Safely handle missing items array */}
               <div className="mt-2">
                 <div className="font-medium">Items:</div>
-                <ul className="ml-4 list-disc">
-                  {order.items.map(item => (
-                    <li key={item.id}>
-                      {item.product?.name || `Product #${item.productId}`} (Qty: {item.quantity})
-                    </li>
-                  ))}
-                </ul>
+                {order.items && order.items.length > 0 ? (
+                  <ul className="ml-4 list-disc">
+                    {order.items.map(item => (
+                      <li key={item.id}>
+                        {item.product?.name || `Product #${item.productId}`} (Qty: {item.quantity})
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="text-sm text-gray-500 ml-4">
+                    No items data — ensure your API includes `items` with `product` in the response.
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -91,17 +113,13 @@ export default function AdminOrdersPage() {
           disabled={page <= 1}
           onClick={() => setPage(page - 1)}
           className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Prev
-        </button>
+        >Prev</button>
         <span>Page {page} of {totalPages}</span>
         <button
           disabled={page >= totalPages}
           onClick={() => setPage(page + 1)}
           className="px-3 py-1 border rounded disabled:opacity-50"
-        >
-          Next
-        </button>
+        >Next</button>
       </div>
     </section>
   );
