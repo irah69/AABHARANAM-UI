@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { apiRequest } from "@/lib/apiClient";
-import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -11,6 +11,7 @@ export default function AdminOrdersPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [statusUpdating, setStatusUpdating] = useState({});
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -31,13 +32,12 @@ export default function AdminOrdersPage() {
   const handleStatusUpdate = async (orderId, newStatus) => {
     setStatusUpdating((prev) => ({ ...prev, [orderId]: true }));
     try {
-      const res = await axios.put(`/api/orders/admin/${orderId}/status`, { status: newStatus });
-      // Refresh order list or update UI
+      const res = await adminApi.updateOrderStatus(accessToken, orderId, newStatus);
       setOrders((prevOrders) => prevOrders.map(order =>
-        order.id === orderId ? { ...order, status: res.data.status || newStatus } : order
+        order.id === orderId ? { ...order, status: res.status || newStatus } : order
       ));
     } catch (err) {
-      alert(err?.response?.data?.message || err.message || "Failed to update status.");
+      alert(err?.message || "Failed to update status.");
     } finally {
       setStatusUpdating((prev) => ({ ...prev, [orderId]: false }));
     }

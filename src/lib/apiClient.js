@@ -234,6 +234,13 @@ export const userApi = {
 /* ============================= */
 
 export const adminApi = {
+    updateOrderStatus: (token, orderId, status, signal) =>
+      apiRequest(`/admin/orders/${orderId}/status`, {
+        method: "PUT",
+        token,
+        body: { status },
+        signal,
+      }),
   getDashboard: (token, signal) =>
     apiRequest("/admin/dashboard", { token, signal }),
 
