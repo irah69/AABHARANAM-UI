@@ -9,7 +9,7 @@ import FilterModal from "@/components/FilterModal";
 import { useQuery } from "@tanstack/react-query";
 import { publicApi } from "@/lib/apiClient";
 import { normalizePage } from "@/lib/pagination";
-import Heading from "@/components/Heading";
+
 function useDebouncedValue(value, delayMs) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -20,14 +20,14 @@ function useDebouncedValue(value, delayMs) {
 }
 
 export default function ProductsPage() {
-  const [page, setPage]           = useState(0);
-  const [size]                    = useState(12);
-  const [sort, setSort]           = useState("createdAt,desc");
+  const [page, setPage]             = useState(0);
+  const [size]                      = useState(12);
+  const [sort, setSort]             = useState("createdAt,desc");
   const [categoryId, setCategoryId] = useState("");
-  const [q, setQ]                 = useState("");
-  const [minPrice, setMinPrice]   = useState("");
-  const [maxPrice, setMaxPrice]   = useState("");
-  const [inStock, setInStock]     = useState(false);
+  const [q, setQ]                   = useState("");
+  const [minPrice, setMinPrice]     = useState("");
+  const [maxPrice, setMaxPrice]     = useState("");
+  const [inStock, setInStock]       = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const debouncedQ = useDebouncedValue(q, 300);
@@ -99,44 +99,45 @@ export default function ProductsPage() {
         overlayText={{ part1: "Quality", part2: "Curated." }}
         locationText="Worldwide Shipping Available"
       />
-<div className="flex flex-col items-start px-4 sm:px-6 md:px-0 mb-2">
-  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-    All Products
-  </h2>
-  <div className="mt-2 w-12 h-[2px] bg-[#d4a574]" />
-</div>
 
-{/* ── Search + Filter row ── */}
-<motion.div
-className="flex flex-row justify-between items-center gap-3 mb-8 px-4 sm:px-6 md:px-0"
-  initial={{ opacity: 0, y: -20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5 }}
->
-        {/* Search */}
-        <div className="flex-1 w-full">
-         
+      {/* ── Heading ── */}
+      <div className="flex flex-col items-start px-4 sm:px-6 md:px-0 mt-6 mb-3">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+          All Products
+        </h2>
+        <div className="mt-2 w-12 h-[2px] bg-[#d4a574]" />
+      </div>
+
+      {/* ── Search + Filter row ── */}
+      <motion.div
+        className="flex flex-row items-center gap-3 mb-8 px-4 sm:px-6 md:px-0"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Search — takes most of the row */}
+        <div className="flex-1 min-w-0">
           <input
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(0); }}
             placeholder="Search products..."
-            className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-[#d4a574] transition-all"
+            className="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:outline-none focus:border-[#d4a574] transition-all text-sm"
           />
         </div>
 
-        {/* Filter button */}
-        <div className="flex gap-3  md:w-auto">
+        {/* Filter button — compact pill */}
+        <div className="flex-shrink-0">
           <motion.button
             onClick={() => setIsFilterOpen(true)}
-            className="relative flex items-center gap-2 px-5 py-3 bg-black text-white rounded-full font-semibold transition-all hover:shadow-lg"
+            className="relative flex items-center gap-1.5 px-4 py-3 bg-black text-white rounded-full font-medium text-sm transition-all hover:shadow-lg whitespace-nowrap"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
           >
-            <Sliders size={20} />
+            <Sliders size={16} />
             <span>Filters</span>
             {activeFilterCount > 0 && (
               <motion.span
-                className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center"
+                className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
               >
@@ -147,29 +148,29 @@ className="flex flex-row justify-between items-center gap-3 mb-8 px-4 sm:px-6 md
         </div>
       </motion.div>
 
-      {/* Error */}
+      {/* ── Error ── */}
       {productsQuery.isError && (
-        <div className="mt-6 p-4 border border-red-200 bg-red-50 text-red-700 rounded">
+        <div className="mx-4 sm:mx-6 md:mx-0 mt-2 p-4 border border-red-200 bg-red-50 text-red-700 rounded">
           Failed to load products.{" "}
           {productsQuery.error?.message ? `(${productsQuery.error.message})` : ""}
         </div>
       )}
 
-      {/* Grid */}
-      <div className="mt-8">
+      {/* ── Product Grid ── */}
+      <div className="mt-4">
         <ProductGrid
           products={products}
           loading={productsQuery.isLoading || productsQuery.isFetching}
         />
       </div>
 
-      {/* Pagination */}
+      {/* ── Pagination ── */}
       {pageData.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-10">
+        <div className="flex items-center justify-between mt-10 px-4 sm:px-6 md:px-0">
           <button
             disabled={page <= 0}
             onClick={() => setPage((p) => Math.max(0, p - 1))}
-            className="px-4 py-2 border border-gray-300 rounded disabled:opacity-50"
+            className="px-4 py-2 border border-gray-300 rounded-full text-sm disabled:opacity-50 hover:border-gray-400 transition-all"
           >
             Previous
           </button>
@@ -180,16 +181,16 @@ className="flex flex-row justify-between items-center gap-3 mb-8 px-4 sm:px-6 md
           <button
             disabled={page + 1 >= pageData.totalPages}
             onClick={() => setPage((p) => p + 1)}
-            className="px-4 py-2 border border-gray-300 rounded disabled:opacity-50"
+            className="px-4 py-2 border border-gray-300 rounded-full text-sm disabled:opacity-50 hover:border-gray-400 transition-all"
           >
             Next
           </button>
         </div>
       )}
 
-      {/* Filter Modal */}
+      {/* ── Filter Modal ── */}
       <FilterModal
-        isOpen={isFilterOpen}filter
+        isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         sort={sort}
         onSortChange={(v) => { setSort(v); setPage(0); }}
