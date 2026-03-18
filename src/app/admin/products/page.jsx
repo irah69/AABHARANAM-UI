@@ -185,6 +185,21 @@ export default function AdminProductsPage() {
             </div>
 
             <div>
+              <label className="block text-sm font-semibold mb-1">Discount (%)</label>
+              <input
+                value={form.discount}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, discount: e.target.value }))
+                }
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg"
+                inputMode="decimal"
+                min="0"
+                max="100"
+                placeholder="0"
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-semibold mb-1">
                 Stock quantity
               </label>
