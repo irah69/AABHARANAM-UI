@@ -108,7 +108,7 @@ export default function ProductsPage() {
 
 {/* ── Search + Filter row ── */}
 <motion.div
-  className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8 px-4 sm:px-6 md:px-0"
+className="flex flex-row justify-between items-center gap-3 mb-8 px-4 sm:px-6 md:px-0"
   initial={{ opacity: 0, y: -20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.5 }}
@@ -125,10 +125,10 @@ export default function ProductsPage() {
         </div>
 
         {/* Filter button */}
-        <div className="flex gap-3 w-full md:w-auto">
+        <div className="flex gap-3  md:w-auto">
           <motion.button
             onClick={() => setIsFilterOpen(true)}
-            className="relative flex items-center gap-2 px-5 py-3 bg-black text-white rounded-lg font-semibold transition-all hover:shadow-lg"
+            className="relative flex items-center gap-2 px-5 py-3 bg-black text-white rounded-full font-semibold transition-all hover:shadow-lg"
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
           >
