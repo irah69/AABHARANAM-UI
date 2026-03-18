@@ -9,7 +9,7 @@ import FilterModal from "@/components/FilterModal";
 import { useQuery } from "@tanstack/react-query";
 import { publicApi } from "@/lib/apiClient";
 import { normalizePage } from "@/lib/pagination";
-
+import Heading from "@/components/Heading";
 function useDebouncedValue(value, delayMs) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -99,17 +99,17 @@ export default function ProductsPage() {
         overlayText={{ part1: "Quality", part2: "Curated." }}
         locationText="Worldwide Shipping Available"
       />
-
+       <Heading title="Products" subtitle={null} />
       {/* ── Search + Filter row ── */}
       <motion.div
-        className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8"
+      className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8 px-4 sm:px-6 md:px-0"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {/* Search */}
         <div className="flex-1 w-full">
-          <label className="block text-xs font-semibold text-gray-700 mb-2">Search</label>
+         
           <input
             value={q}
             onChange={(e) => { setQ(e.target.value); setPage(0); }}
@@ -183,7 +183,7 @@ export default function ProductsPage() {
 
       {/* Filter Modal */}
       <FilterModal
-        isOpen={isFilterOpen}ffilter
+        isOpen={isFilterOpen}filter
         onClose={() => setIsFilterOpen(false)}
         sort={sort}
         onSortChange={(v) => { setSort(v); setPage(0); }}
