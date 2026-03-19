@@ -110,7 +110,7 @@ export default function AdminProductsPage() {
 
   const categoriesQuery = useQuery({
     queryKey: ["categories"],
-    queryFn: ({ signal }) => publicApi.getCategories(signal),
+    queryFn: ({ signal }) => publicApi.getCategories({}, signal),
   });
 
   const categories = useMemo(() => {
