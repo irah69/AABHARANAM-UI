@@ -1,21 +1,3 @@
-// Product Ratings API
-export const ratingsApi = {
-  rateProduct: async (productId, { rating, description }, token, signal) => {
-    return apiRequest(`/ratings/product/${productId}`, {
-      method: 'POST',
-      token,
-      query: { rating, description },
-      signal,
-      // No Content-Type header, no body
-    });
-  },
-  getProductRatings: async (productId, signal) => {
-    return apiRequest(`/ratings/product/${productId}`, {
-      method: 'GET',
-      signal,
-    });
-  },
-};
 import { ApiError } from "@/lib/apiError";
 
 /**
@@ -39,7 +21,6 @@ export async function apiRequest(path, options = {}) {
     headers = {},
   } = options;
 
-  // Use environment variable or fallback for local dev
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   if (!baseUrl) {
@@ -48,7 +29,6 @@ export async function apiRequest(path, options = {}) {
 
   const url = new URL(`${baseUrl}${path}`);
 
-  // Attach query params
   if (query) {
     for (const [key, value] of Object.entries(query)) {
       if (value === undefined || value === null || value === "") continue;
@@ -61,8 +41,6 @@ export async function apiRequest(path, options = {}) {
     ...headers,
   };
 
-
-  // Detect if body is URLSearchParams (form data) or string (for x-www-form-urlencoded)
   const isFormBody = body instanceof URLSearchParams || typeof body === "string";
   const hasJsonBody =
     body !== undefined &&
@@ -70,7 +48,6 @@ export async function apiRequest(path, options = {}) {
     !(body instanceof FormData) &&
     !isFormBody;
 
-  // Only set Content-Type for JSON if not already set
   if (hasJsonBody && !requestHeaders["Content-Type"]) {
     requestHeaders["Content-Type"] = "application/json";
   }
@@ -79,13 +56,19 @@ export async function apiRequest(path, options = {}) {
     requestHeaders.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(url.toString(), {
+  // Only pass signal if it's a real AbortSignal
+  const fetchOptions = {
     method,
     headers: requestHeaders,
-    body: hasJsonBody ? JSON.stringify(body) : (isFormBody ? body : undefined),
-    signal,
+    body: hasJsonBody ? JSON.stringify(body) : isFormBody ? body : undefined,
     cache: "no-store",
-  });
+  };
+
+  if (signal instanceof AbortSignal) {
+    fetchOptions.signal = signal;
+  }
+
+  const res = await fetch(url.toString(), fetchOptions);
 
   const contentType = res.headers.get("content-type") || "";
   const isJson = contentType.includes("application/json");
@@ -116,8 +99,11 @@ export async function apiRequest(path, options = {}) {
 /* ============================= */
 
 export const publicApi = {
+  // No query params — backend returns plain array
   getCategories: (signal) =>
-    apiRequest("/categories", { signal }),
+    apiRequest("/categories", {
+      signal: signal instanceof AbortSignal ? signal : undefined,
+    }),
 
   getCategory: (id, signal) =>
     apiRequest(`/categories/${id}`, { signal }),
@@ -234,13 +220,14 @@ export const userApi = {
 /* ============================= */
 
 export const adminApi = {
-    updateOrderStatus: (token, orderId, status, signal) =>
-      apiRequest(`/admin/orders/${orderId}/status`, {
-        method: "PUT",
-        token,
-        body: { status },
-        signal,
-      }),
+  updateOrderStatus: (token, orderId, status, signal) =>
+    apiRequest(`/admin/orders/${orderId}/status`, {
+      method: "PUT",
+      token,
+      body: { status },
+      signal,
+    }),
+
   getDashboard: (token, signal) =>
     apiRequest("/admin/dashboard", { token, signal }),
 
@@ -296,19 +283,34 @@ export const adminApi = {
       token,
       signal,
     }),
+
   getContactUs: (token, signal) =>
-    apiRequest("/admin/contactus", {
-      token,
-      signal,
-    }),
+    apiRequest("/admin/contactus", { token, signal }),
+
   getSales: (token, signal) =>
-    apiRequest("/admin/sales", {
+    apiRequest("/admin/sales", { token, signal }),
+
+  getOrders: ({ token } = {}, signal) =>
+    apiRequest("/admin/orders", { token, signal }),
+};
+
+/* ============================= */
+/*          RATINGS API          */
+/* ============================= */
+
+export const ratingsApi = {
+  rateProduct: async (productId, { rating, description }, token, signal) => {
+    return apiRequest(`/ratings/product/${productId}`, {
+      method: "POST",
       token,
+      query: { rating, description },
       signal,
-    }),
-  getOrders: ({ token }, signal) =>
-    apiRequest("/admin/orders", {
-      token,
+    });
+  },
+  getProductRatings: async (productId, signal) => {
+    return apiRequest(`/ratings/product/${productId}`, {
+      method: "GET",
       signal,
-    }),
+    });
+  },
 };
