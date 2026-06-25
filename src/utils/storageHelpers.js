@@ -1,6 +1,6 @@
 // Local Storage utilities for product management
-export const PRODUCTS_STORAGE_KEY = 'murgan_products';
-export const INITIAL_PRODUCTS_KEY = 'murgan_initial_products';
+export const PRODUCTS_STORAGE_KEY = 'AABHARANAM_products';
+export const INITIAL_PRODUCTS_KEY = 'AABHARANAM_initial_products';
 
 // Get all products from localStorage
 export const getProductsFromStorage = (initialProducts) => {

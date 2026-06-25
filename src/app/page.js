@@ -4,7 +4,7 @@ import FeaturedProducts from '@/components/FeaturedProducts';
 
 // SEO Metadata
 export const metadata = {
-  title: "Murgan Store - Premium Women's Fashion & Dresses",
+  title: "AABHARANAM Store - Premium Women's Fashion & Dresses",
   description:
     "Discover amazing women's dresses and apparel. Shop premium quality products with unbeatable prices and fast, free shipping on orders over ₹50.",
   keywords: "women dresses, fashion, dress store, online shopping",
@@ -61,7 +61,7 @@ export default async function Home() {
     {/*   <StudioSection /> */}
 
       {/* Benefits Section */}
-      {/* <WhyChooseMurgan /> */}
+      {/* <WhyChooseAABHARANAM /> */}
 
       {/* Perspectives/Stories Section */}
       <PerspectivesSection />

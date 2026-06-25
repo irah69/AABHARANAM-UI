@@ -5,10 +5,10 @@ import LoaderWrapper from '@/components/LoaderWrapper';
 import Providers from '@/components/Providers';
 
 export const metadata = {
-  title: 'Murgan Store - Premium Women\'s Dresses',
-  description: 'Welcome to Murgan Store - Your destination for premium quality women\'s dresses with best prices and styles.',
+  title: 'AABHARANAM Store - Premium Women\'s Dresses',
+  description: 'Welcome to AABHARANAM Store - Your destination for premium quality women\'s dresses with best prices and styles.',
   keywords: 'women dresses, store, dresses, shopping, fashion, online store',
-  author: 'Murgan Store',
+  author: 'AABHARANAM Store',
   icons: {
     icon: '/logo.png',
     apple: '/logo.png',

@@ -143,7 +143,7 @@ export default function AboutUs() {
               className="company-header"
               variants={itemVariants}
             >
-              <h1 className="company-name">MURGAN</h1>
+              <h1 className="company-name">AABHARANAM</h1>
               <motion.div
                 className="accent-line"
                 initial={{ width: 0 }}
@@ -163,7 +163,7 @@ export default function AboutUs() {
               className="company-description"
               variants={itemVariants}
             >
-              Welcome to Murgan Wardrobe, where elegance meets accessibility. Since our establishment, we've been on a mission to transform how you dress, feel, and express yourself. We believe that everyone deserves to wear confidence.
+              Welcome to AABHARANAM Wardrobe, where elegance meets accessibility. Since our establishment, we've been on a mission to transform how you dress, feel, and express yourself. We believe that everyone deserves to wear confidence.
             </motion.p>
 
             <motion.div
@@ -190,7 +190,7 @@ export default function AboutUs() {
                 <Mail className="contact-icon" />
                 <div>
                   <h4>Email</h4>
-                  <p>hello@Murgan.com</p>
+                  <p>hello@AABHARANAM.com</p>
                 </div>
               </motion.div>
 
@@ -238,7 +238,7 @@ export default function AboutUs() {
               >
                 <img
                   src="./logo1.png"
-                  alt="Murgan Wardrobe"
+                  alt="AABHARANAM Wardrobe"
                   className="circle-image"
                 />
               </motion.div>
@@ -378,7 +378,7 @@ export default function AboutUs() {
 
         <motion.div className="timeline" variants={containerVariants}>
           {[
-            { year: "2009", title: "Founded", desc: "Murgan Wardrobe was born with a simple vision" },
+            { year: "2009", title: "Founded", desc: "AABHARANAM Wardrobe was born with a simple vision" },
             { year: "2012", title: "First Store", desc: "Opened our flagship store in New York" },
             { year: "2016", title: "Online Launch", desc: "Expanded to digital marketplace" },
             { year: "2020", title: "Global Reach", desc: "Now serving customers in 100+ cities" },
@@ -415,7 +415,7 @@ export default function AboutUs() {
         <motion.div className="cta-content" variants={itemVariants}>
           <h2>Ready to Discover Your Style?</h2>
           <p>
-            Join thousands of fashion enthusiasts who've transformed their wardrobe with Murgan
+            Join thousands of fashion enthusiasts who've transformed their wardrobe with AABHARANAM
           </p>
           <motion.button
             className="cta-button-large"

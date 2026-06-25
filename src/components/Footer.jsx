@@ -66,9 +66,9 @@ export default function Footer() {
 
 
             <div className="flex items-center mb-8">
-              <img src="/logo.png" alt="Murgan Logo" className="h-12 w-auto mr-3" style={{objectFit: 'contain'}} />
+              <img src="/logo.png" alt="AABHARANAM Logo" className="h-12 w-auto mr-3" style={{objectFit: 'contain'}} />
               <span className="text-xl font-semibold tracking-[0.2em] text-black">
-                MURGAN
+                AABHARANAM
               </span>
             </div>
 
@@ -146,11 +146,11 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="mailto:support@murgan.com"
+                  href="mailto:support@AABHARANAM.com"
                   className="relative text-gray-600 hover:text-black text-sm flex items-center after:absolute after:left-7 after:-bottom-1 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-[60%]"
                 >
                   <Mail className="w-5 h-5 mr-2 text-gray-400" />
-                  support@murgan.com
+                  support@AABHARANAM.com
                 </a>
               </li>
 
@@ -172,7 +172,7 @@ export default function Footer() {
         {/* BOTTOM COPYRIGHT */}
         <div className="mt-12 pt-8 border-t border-gray-100 text-center">
           <p className="text-gray-600 text-sm">
-            © {currentYear} MURGAN. All rights reserved. | Crafted with care. Designed for you.
+            © {currentYear} AABHARANAM. All rights reserved. | Crafted with care. Designed for you.
           </p>
         </div>
 

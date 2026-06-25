@@ -169,7 +169,7 @@ function useSalesStats() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("murgan_access_token");
+    const token = localStorage.getItem("AABHARANAM_access_token");
     import("@/lib/apiClient").then(({ adminApi }) => {
       adminApi.getSales(token)
         .then((res) => {

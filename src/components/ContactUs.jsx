@@ -12,7 +12,7 @@ const ContactUs = () => {
     e.preventDefault();
     setStatus("");
     try {
-      const res = await fetch("https://murgan-backend-1.onrender.com/contactus", {
+      const res = await fetch("https://AABHARANAM-backend-1.onrender.com/contactus", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message, queryType }),

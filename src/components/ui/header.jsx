@@ -208,7 +208,7 @@ function Header1() {
                                 isScrolled ? "text-lg" : "text-2xl"
                             }`}
                         >
-                            MURGAN
+                            AABHARANAM
                         </span>
                     </Link>
                 </div>

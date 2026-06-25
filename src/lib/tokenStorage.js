@@ -1,4 +1,4 @@
-const ACCESS_TOKEN_KEY = "murgan_access_token";
+const ACCESS_TOKEN_KEY = "AABHARANAM_access_token";
 
 export function getStoredAccessToken() {
   if (typeof window === "undefined") return null;
