@@ -1,68 +1,84 @@
-import Link from "next/link";
-import "../styles/FeaturedProducts.css";
+"use client";
 
-export default function FeaturedProducts({ products }) {
+import { motion } from "framer-motion";
+
+const texts = [
+  {
+    title: "Timeless Elegance",
+    description:
+      "Crafted with precision to celebrate every tradition and every occasion.",
+    direction: "right",
+  },
+  {
+    title: "Designed for You",
+    description:
+      "Every collection reflects elegance, craftsmanship, and modern style.",
+    direction: "left",
+  },
+  {
+    title: "Luxury in Every Detail",
+    description:
+      "Experience premium quality with designs made to last generations.",
+    direction: "right",
+  },
+  {
+    title: "Made with Passion",
+    description:
+      "Jewellery that tells stories and creates unforgettable memories.",
+    direction: "left",
+  },
+];
+
+export default function FeaturedProducts() {
   return (
-    <section className="featured-section">
-      {/* Section Header */}
-      <div className="featured-header">
-        <h2>Featured Collection</h2>
-        {/* <p>Curated editorial picks for the season</p> */}
-      </div>
+    <section className="bg-white">
+      {texts.map((item, index) => (
+        <div
+          key={index}
+          className={`h-screen flex items-center px-6 md:px-16 lg:px-24 ${
+            item.direction === "left"
+              ? "justify-start"
+              : "justify-end"
+          }`}
+        >
+          <motion.div
+            initial={{
+              opacity: 0,
+              x: item.direction === "left" ? -120 : 120,
+            }}
+            whileInView={{
+              opacity: 1,
+              x: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.3,
+            }}
+            transition={{
+              duration: 0.9,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className={`
+              w-full
+              md:w-[55%]
+              lg:w-[45%]
+              ${
+                item.direction === "left"
+                  ? "text-left"
+                  : "text-right"
+              }
+            `}
+          >
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-light leading-tight">
+              {item.title}
+            </h2>
 
-      {/* Editorial Grid */}
-      <div className="featured-grid">
-        <div className="featured-item large">
-          <Link href="/products">
-            <img
-              src="/saree.png"
-              alt="Product"
-              className="cursor-pointer"
-            />
-          </Link>
-          <span>THE ART OF STILLNESS</span>
+            <p className="mt-6 text-base md:text-lg lg:text-xl leading-8 text-gray-600">
+              {item.description}
+            </p>
+          </motion.div>
         </div>
-
-        <div className="featured-item large">
-          <Link href="/products">
-            <img src="/saree.png" alt="Product" className="cursor-pointer" />
-          </Link>
-          <span>MODERN FORM</span>
-        </div>
-
-        <div className="featured-item">
-          <Link href="/products">
-            <img src="/saree.png" alt="Product" className="cursor-pointer" />
-          </Link>
-          <span>ESSENTIAL SILHOUETTE</span>
-        </div>
-
-        <div className="featured-item">
-          <Link href="/products">
-            <img src="/saree.png" alt="Product" className="cursor-pointer" />
-          </Link>
-          <span>TIMELESS WEAR</span>
-        </div>
-
-        <div className="featured-item">
-          <Link href="/products">
-            <img src="/saree.png" alt="Product" className="cursor-pointer" />
-          </Link>
-          <span>MINIMAL STATEMENT</span>
-        </div>
-
-        <div className="featured-item">
-          <Link href="/products">
-            <img src="/saree.png" alt="Product" className="cursor-pointer" />
-          </Link>
-          <span>ELEGANT GRACE</span>
-        </div>
-      </div>
-
-      {/* CTA */}
-      {/* <div className="featured-cta">
-        <button>View Full Collection</button>
-      </div> */}
+      ))}
     </section>
   );
 }

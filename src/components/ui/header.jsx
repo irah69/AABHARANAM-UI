@@ -25,12 +25,7 @@ function Header1() {
             href: "/",
             description: "",
         },
-       
-        {
-            title: "Products",
-            href: "/products",
-            description: "",
-        },
+
         {
             title: "Company",
             href: "/about",

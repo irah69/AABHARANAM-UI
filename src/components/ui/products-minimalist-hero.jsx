@@ -10,6 +10,7 @@ export const ProductsMinimalistHero = ({
   logoText = 'mnmlst.',
   navLinks = [],
   mainText = '',
+  Tagline = '',
   imageSrc = '',
   imageAlt = '',
   overlayText = { part1: 'Quality', part2: 'Curated.' },
@@ -68,6 +69,9 @@ export const ProductsMinimalistHero = ({
           {/* Main Description */}
           <motion.p className="products-hero-description" variants={itemVariants}>
             {mainText}
+          </motion.p>
+          <motion.p className="products-hero-tagline" variants={itemVariants}>
+            {Tagline}
           </motion.p>
 
           {/* CTA Button */}
