@@ -93,7 +93,8 @@ export default function ProductsPage() {
       {/* ── HERO ── */}
       <ProductsMinimalistHero
         logoText="mnmlst."
-        mainText="Explore our handpicked collection of exquisite sarees — from timeless silks to vibrant banarasi weaves. Each piece is crafted to celebrate the elegance and grace of every woman."
+        mainText="Where Elegance Becomes an Heirloom"
+        Tagline="Discover timeless fashion that transcends trends and generations."
         imageSrc="./productssaree.png"
         imageAlt="Minimalist fashion collection showcase"
         overlayText={{ part1: "Quality", part2: "Curated." }}
