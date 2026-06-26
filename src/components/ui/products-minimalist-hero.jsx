@@ -75,10 +75,10 @@ export const ProductsMinimalistHero = ({
           </motion.p>
 
           {/* CTA Button */}
-          <motion.a href="#products" className="products-hero-cta-btn" variants={itemVariants}>
+{/*           <motion.a href="#products" className="products-hero-cta-btn" variants={itemVariants}>
             <span>Explore Collection</span>
             <ChevronDown size={20} />
-          </motion.a>
+          </motion.a> */}
         </motion.div>
 
         {/* Right Content - Image with Circle Background */}

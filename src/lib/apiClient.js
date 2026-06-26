@@ -21,7 +21,7 @@ export async function apiRequest(path, options = {}) {
     headers = {},
   } = options;
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const baseUrl = "http://localhost:8080/api";
 
   if (!baseUrl) {
     throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined in environment variables");

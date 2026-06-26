@@ -66,14 +66,21 @@
 }
 
 .products-hero-description {
-  font-size: 1.05rem;
-  line-height: 1.75;
-  color: #000000;
-  letter-spacing: 0.01em;
-  font-weight: 800;
-  font-family: 'Playfair Display', serif;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #000;
 }
-
+.products-hero-tagline {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.8;
+  color: #4b4b4b;
+  max-width: 500px;
+}
 /* ==========================================
    CTA BUTTON — solid black, gold shimmer
    ========================================== */
