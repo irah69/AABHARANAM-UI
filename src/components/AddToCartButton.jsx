@@ -7,7 +7,8 @@ export default function AddToCartButton({ productId }) {
   const [added, setAdded] = useState(false);
 
   const handleClick = async () => {
-    await addToCart(productId, 1);
+    const addedToCart = await addToCart(productId, 1);
+    if (!addedToCart) return;
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };

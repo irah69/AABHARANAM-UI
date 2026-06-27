@@ -57,6 +57,18 @@ export function CartProvider({ children }) {
     },
   });
 
+  const addToCart = async (productId, quantity = 1) => {
+    if (!isAuthenticated) {
+      if (typeof window !== 'undefined') {
+        window.alert('Please log in to add items to your cart.');
+      }
+      return false;
+    }
+
+    await addItemMutation.mutateAsync({ productId, quantity });
+    return true;
+  };
+
   const getTotalItems = () =>
     cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
 
@@ -74,7 +86,7 @@ export function CartProvider({ children }) {
         isLoading: cartQuery.isLoading,
         error: cartQuery.error ?? null,
         refreshCart,
-        addToCart: (productId, quantity = 1) => addItemMutation.mutateAsync({ productId, quantity }),
+        addToCart,
         setQuantity: (productId, quantity) => setQuantityMutation.mutateAsync({ productId, quantity }),
         removeItem: (productId) => removeItemMutation.mutateAsync({ productId }),
         checkout: (shippingAddress) => checkoutMutation.mutateAsync({ shippingAddress }),

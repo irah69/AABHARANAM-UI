@@ -3,7 +3,7 @@ import { Header1 } from '@/components/ui/header';
 import Footer from '@/components/Footer';
 import LoaderWrapper from '@/components/LoaderWrapper';
 import Providers from '@/components/Providers';
-
+import Script from "next/script";
 export const metadata = {
   title: 'AABHARANAM Store - Premium Women\'s Dresses',
   description: 'Welcome to AABHARANAM Store - Your destination for premium quality women\'s dresses with best prices and styles.',
@@ -47,6 +47,10 @@ export default function RootLayout({ children }) {
           </main>
           <Footer />
         </Providers>
+          <Script
+    src="https://checkout.razorpay.com/v1/checkout.js"
+    strategy="lazyOnload"
+  />
       </body>
 
     </html>

@@ -1,9 +1,10 @@
 "use client";
-
+import { paymentApi } from "@/lib/apiClient";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+
 import { useCart } from "@/context/CartContext";
 
 const styles = `
@@ -291,7 +292,7 @@ const styles = `
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { isAuthenticated, isHydrated } = useAuth();
+  const { isAuthenticated, isHydrated, accessToken } = useAuth();
   const { cartItems, checkout, isMutating, getTotalPrice } = useCart();
 
   const [shippingAddress, setShippingAddress] = useState("");
@@ -317,17 +318,79 @@ export default function CheckoutPage() {
       </>
     );
   }
+/* global Razorpay */
+const onSubmit = async (e) => {
+  e.preventDefault();
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const res = await checkout(shippingAddress);
-      setSuccess(res || { ok: true });
-    } catch (err) {
-      setError(err?.message || "Checkout failed.");
-    }
-  };
+  setError("");
+
+  try {
+    const order = await paymentApi.createOrder(
+      accessToken,
+      {
+        shippingAddress,
+      }
+    );
+
+    const options = {
+      key: "rzp_test_xxxxxxxxx", // replace with your Key ID
+
+      amount: order.amount,
+
+      currency: order.currency,
+
+      order_id: order.id,
+
+      name: "AABHARANAM",
+
+      description: "Order Payment",
+
+      handler: async function (response) {
+
+        console.log("Payment Success");
+
+        console.log(response);
+
+        /*
+        response.razorpay_payment_id
+        response.razorpay_order_id
+        response.razorpay_signature
+        */
+
+        alert("Payment Successful!");
+
+        setSuccess(true);
+      },
+
+      modal: {
+        ondismiss: function () {
+          console.log("Payment cancelled");
+        },
+      },
+
+      prefill: {
+        name: "",
+        email: "",
+        contact: "",
+      },
+
+      theme: {
+        color: "#111111",
+      },
+    };
+
+    const razorpay = new window.Razorpay(options);
+
+    razorpay.open();
+
+  } catch (err) {
+
+    console.error(err);
+
+    setError(err.message || "Unable to create payment.");
+
+  }
+};
 
   /* ── SUCCESS ── */
   if (success) {
