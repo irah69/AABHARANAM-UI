@@ -333,7 +333,7 @@ const onSubmit = async (e) => {
     );
 
     const options = {
-      key: "rzp_test_xxxxxxxxx", // replace with your Key ID
+      key: "rzp_test_T6kaciGdYOYzsp", // replace with your Key ID
 
       amount: order.amount,
 
