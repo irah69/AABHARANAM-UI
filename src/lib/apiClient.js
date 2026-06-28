@@ -214,27 +214,7 @@ export const userApi = {
       signal,
     }),
 };
-/* ============================= */
-/*          PAYMENT API          */
-/* ============================= */
 
-export const paymentApi = {
-  createOrder: (token, body, signal) =>
-    apiRequest("/payments/create-order", {
-      method: "POST",
-      token,
-      body,
-      signal,
-    }),
-
-  verifyPayment: (token, body, signal) =>
-    apiRequest("/payments/verify", {
-      method: "POST",
-      token,
-      body,
-      signal,
-    }),
-};
 /* ============================= */
 /*           ADMIN API           */
 /* ============================= */
@@ -333,4 +313,27 @@ export const ratingsApi = {
       signal,
     });
   },
+};
+/* ============================= */
+/*          PAYMENT API          */
+/* ============================= */
+
+export const paymentApi = {
+  createOrder: async (body, token, signal) => {
+    return apiRequest("/payments/create-order", {
+      method: "POST",
+      token,
+      body,
+      signal,
+    });
+  },
+
+  verifyPayment: async (paymentData, token, signal) => {
+  return apiRequest("/payments/verify", {
+    method: "POST",
+    token,
+    body: paymentData,
+    signal,
+  });
+},
 };

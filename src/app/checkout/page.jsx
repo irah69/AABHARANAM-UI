@@ -323,14 +323,16 @@ const onSubmit = async (e) => {
   e.preventDefault();
 
   setError("");
-
+  console.log("Shipping Address:", shippingAddress);
+console.log("Type:", typeof shippingAddress);
   try {
+    
     const order = await paymentApi.createOrder(
-      accessToken,
-      {
-        shippingAddress,
-      }
-    );
+  {
+    shippingAddress,
+  },
+  accessToken
+);
 
     const options = {
       key: "rzp_test_T6kaciGdYOYzsp", // replace with your Key ID
@@ -347,27 +349,31 @@ const onSubmit = async (e) => {
 
       handler: async function (response) {
 
-        console.log("Payment Success");
+  try {
 
-        console.log(response);
-
-        /*
-        response.razorpay_payment_id
-        response.razorpay_order_id
-        response.razorpay_signature
-        */
-
-        alert("Payment Successful!");
-
-        setSuccess(true);
+    await paymentApi.verifyPayment(
+      {
+        razorpayOrderId: response.razorpay_order_id,
+        razorpayPaymentId: response.razorpay_payment_id,
+        razorpaySignature: response.razorpay_signature,
+        shippingAddress,
       },
+      accessToken
+    );
 
-      modal: {
-        ondismiss: function () {
-          console.log("Payment cancelled");
-        },
-      },
+    alert("Payment Successful!");
 
+    setSuccess(true);
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert("Payment verification failed.");
+
+  }
+
+},
       prefill: {
         name: "",
         email: "",
