@@ -43,7 +43,7 @@ const styles = `
 
   .cart-unauth p {
     font-size: 0.9rem;
-    color: #999;
+    color: #050505;
     margin: 0 0 32px;
     max-width: 320px;
     font-weight: 400;
@@ -82,7 +82,7 @@ const styles = `
   .btn-ghost {
     font-family: 'Playfair Display', serif;
     font-size: 0.82rem;
-    color: #888;
+    color: #000000;
     text-decoration: none;
     letter-spacing: 0.06em;
     transition: color 0.15s;
@@ -165,7 +165,8 @@ const styles = `
 
   .cart-item-count {
     font-size: 0.75rem;
-    color: #999;
+    color: #000000;
+    font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     padding-bottom: 4px;
@@ -251,7 +252,7 @@ const styles = `
 
   .cart-item-price {
     font-size: 0.8rem;
-    color: #888;
+    color: #000000;
     margin: 0 0 14px;
     font-weight: 400;
   }
@@ -348,8 +349,9 @@ const styles = `
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #bbb;
+    color: #000000;
     margin: 0 0 20px;
+    font-weight: 700;
   }
 
   .summary-row {
@@ -357,7 +359,7 @@ const styles = `
     justify-content: space-between;
     align-items: center;
     font-size: 0.85rem;
-    color: #666;
+    color: #000000;
     margin-bottom: 10px;
   }
 
@@ -598,7 +600,7 @@ export default function CartPage() {
                 </div>
                 <div className="summary-row">
                   <span>Shipping</span>
-                  <span style={{ color: "#111", fontSize: "0.78rem", letterSpacing: "0.04em" }}>
+                  <span style={{ color: "#000000", fontSize: "0.78rem", letterSpacing: "0.04em" }}>
                     Calculated at checkout
                   </span>
                 </div>

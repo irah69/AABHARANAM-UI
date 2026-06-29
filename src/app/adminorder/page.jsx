@@ -176,7 +176,7 @@ const styles = `
     border-bottom: 1px solid #f5f5f5;
   }
   .amount-row:last-child { border-bottom: none; }
-  .amount-label { font-size: 0.68rem; color: #888; text-transform: uppercase; letter-spacing: 0.07em; }
+  .amount-label { font-size: 0.68rem; color: #000000; text-transform: uppercase; letter-spacing: 0.07em; }
   .amount-value { font-size: 0.92rem; font-weight: 700; }
   .amount-value.total { font-size: 1.05rem; }
 
@@ -263,7 +263,7 @@ const styles = `
   .status-option.active .dot { background: #fff !important; }
 
   .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .dot-pending    { background: #888; }
+  .dot-pending    { background: #000000; }
   .dot-paid       { background: #2d7a2d; }
   .dot-processing { background: #b07d00; }
   .dot-shipped    { background: #1a5eb8; }

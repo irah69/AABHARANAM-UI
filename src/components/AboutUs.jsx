@@ -1,11 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import {
-  Building2,
   Award,
-  Users,
   Zap,
-  TrendingUp,
   Phone,
   Mail,
   MapPin,
@@ -14,18 +11,22 @@ import {
   Shield,
   Globe,
   ArrowRight,
+  Gem,
+  Star,
+  Sparkles,
 } from "lucide-react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import "../styles/about-page.css";
 
+// ─── Dynamic Year Helpers ──────────────────────────────────────────────────────
+const FOUNDING_YEAR = new Date().getFullYear() - 1; // Always 1 year ago
+const CURRENT_YEAR = new Date().getFullYear();
+const YEARS_IN_BUSINESS = CURRENT_YEAR - FOUNDING_YEAR; // Grows each year
+
 export default function AboutUs() {
-  const [imageUrls, setimageUrls] = useState(
-    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop"
-  );
   const containerRef = useRef(null);
   const heroRef = useRef(null);
   const valuesRef = useRef(null);
-  const teamRef = useRef(null);
   const statsRef = useRef(null);
   const ctaRef = useRef(null);
 
@@ -39,7 +40,6 @@ export default function AboutUs() {
 
   const heroInView = useInView(heroRef, { once: false, amount: 0.3 });
   const valuesInView = useInView(valuesRef, { once: false, amount: 0.2 });
-  const teamInView = useInView(teamRef, { once: false, amount: 0.2 });
   const statsInView = useInView(statsRef, { once: false, amount: 0.3 });
   const ctaInView = useInView(ctaRef, { once: false, amount: 0.3 });
 
@@ -47,10 +47,7 @@ export default function AboutUs() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
     },
   };
 
@@ -65,61 +62,76 @@ export default function AboutUs() {
 
   const slideInLeft = {
     hidden: { x: -60, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
+    visible: { x: 0, opacity: 1, transition: { duration: 0.8, ease: "easeOut" } },
   };
 
   const slideInRight = {
     hidden: { x: 60, opacity: 0 },
-    visible: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
+    visible: { x: 0, opacity: 1, transition: { duration: 0.8, ease: "easeOut" } },
   };
 
   const scaleIn = {
     hidden: { scale: 0.8, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
+    visible: { scale: 1, opacity: 1, transition: { duration: 0.8, ease: "easeOut" } },
   };
 
   const values = [
     {
-      icon: <Heart className="w-8 h-8" />,
-      title: "Quality",
-      description: "We deliver premium products crafted with meticulous attention to detail",
+      icon: <Gem className="w-8 h-8" />,
+      title: "Purity",
+      description:
+        "Every piece is crafted from certified one gram gold, guaranteed hallmarked and authentic.",
     },
     {
       icon: <Lightbulb className="w-8 h-8" />,
-      title: "Innovation",
-      description: "Constantly evolving our collections with latest trends and designs",
+      title: "Artistry",
+      description:
+        "Our artisans blend traditional Hyderabadi craft with contemporary design sensibility.",
     },
     {
       icon: <Shield className="w-8 h-8" />,
       title: "Trust",
-      description: "Building lasting relationships through transparency and reliability",
+      description:
+        "Transparent pricing, no hidden charges — jewellery you can gift with full confidence.",
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: "Sustainability",
-      description: "Committed to ethical practices and sustainable sourcing",
+      title: "Accessibility",
+      description:
+        "Temple-gold look at everyday prices, so elegance is never out of reach.",
     },
   ];
 
-
-
+  // Stats auto-update with YEARS_IN_BUSINESS
   const stats = [
-    { number: "15+", label: "Years in Fashion" },
-    { number: "50K+", label: "Happy Customers" },
-    { number: "200+", label: "Premium Collections" },
-    { number: "100+", label: "Cities Served" },
+    { number: `${YEARS_IN_BUSINESS}+`, label: "Years of Craftsmanship" },
+    { number: "5K+", label: "Happy Customers" },
+    { number: "300+", label: "Jewellery Designs" },
+  
+  ];
+
+  // Timeline: founding year is always dynamic
+  const timeline = [
+    {
+      year: `${FOUNDING_YEAR}`,
+      title: "Founded",
+      desc: "Aabharanam Jewels was born with a vision — real gold aesthetics at one-gram prices.",
+    },
+    {
+      year: `${FOUNDING_YEAR}`,
+      title: "First Collection",
+      desc: "Launched our signature temple-gold collection featuring 50+ handcrafted designs.",
+    },
+    {
+      year: `${CURRENT_YEAR}`,
+      title: "Online Launch",
+      desc: "Expanded to pan-India delivery, bringing Hyderabadi gold craftsmanship to your doorstep.",
+    },
+    {
+      year: `${CURRENT_YEAR}`,
+      title: "Growing Strong",
+      desc: `Serving 5,000+ customers and adding new designs every month in ${CURRENT_YEAR}.`,
+    },
   ];
 
   return (
@@ -134,15 +146,9 @@ export default function AboutUs() {
         variants={containerVariants}
       >
         <div className="hero-content-wrapper">
-          {/* Left Block - Company Info */}
-          <motion.div
-            className="hero-left"
-            variants={slideInLeft}
-          >
-            <motion.div
-              className="company-header"
-              variants={itemVariants}
-            >
+          {/* Left Block */}
+          <motion.div className="hero-left" variants={slideInLeft}>
+            <motion.div className="company-header" variants={itemVariants}>
               <h1 className="company-name">AABHARANAM</h1>
               <motion.div
                 className="accent-line"
@@ -152,24 +158,18 @@ export default function AboutUs() {
               />
             </motion.div>
 
-            <motion.p
-              className="company-tagline"
-              variants={itemVariants}
-            >
-              Wardrobe Essentials Reimagined
+            <motion.p className="company-tagline" variants={itemVariants}>
+              One Gram Gold · Timeless Elegance
             </motion.p>
 
-            <motion.p
-              className="company-description"
-              variants={itemVariants}
-            >
-              Welcome to AABHARANAM Wardrobe, where elegance meets accessibility. Since our establishment, we've been on a mission to transform how you dress, feel, and express yourself. We believe that everyone deserves to wear confidence.
+            <motion.p className="company-description" variants={itemVariants}>
+              Welcome to Aabharanam Jewels — where the grandeur of pure gold meets the
+              accessibility of everyday wear. Founded in {FOUNDING_YEAR}, we craft
+              exquisite one gram gold jewellery that carries the soul of traditional
+              Hyderabadi craftsmanship, designed for the modern Indian woman.
             </motion.p>
 
-            <motion.div
-              className="contact-info"
-              variants={containerVariants}
-            >
+            <motion.div className="contact-info" variants={containerVariants}>
               <motion.div
                 className="contact-item"
                 variants={itemVariants}
@@ -178,7 +178,7 @@ export default function AboutUs() {
                 <Phone className="contact-icon" />
                 <div>
                   <h4>Call Us</h4>
-                  <p>+1 (555) 123-4567</p>
+                  <p>+91 6281022771</p>
                 </div>
               </motion.div>
 
@@ -190,7 +190,7 @@ export default function AboutUs() {
                 <Mail className="contact-icon" />
                 <div>
                   <h4>Email</h4>
-                  <p>hello@AABHARANAM.com</p>
+                  <p>hello@aabharanamjewels.com</p>
                 </div>
               </motion.div>
 
@@ -202,30 +202,15 @@ export default function AboutUs() {
                 <MapPin className="contact-icon" />
                 <div>
                   <h4>Location</h4>
-                  <p>New York, NY 10001</p>
+                  <p>Patelguda,Hyderabad, Telangana</p>
                 </div>
               </motion.div>
             </motion.div>
 
-            <motion.button
-              className="cta-button"
-              variants={itemVariants}
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)",
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Explore Collections
-              <ArrowRight className="button-icon" />
-            </motion.button>
           </motion.div>
 
-          {/* Right Block - Circle Image */}
-          <motion.div
-            className="hero-right"
-            variants={slideInRight}
-          >
+          {/* Right Block - Logo */}
+          <motion.div className="hero-right" variants={slideInRight}>
             <motion.div
               className="image-circle-container"
               whileHover={{ scale: 1.05 }}
@@ -235,48 +220,20 @@ export default function AboutUs() {
                 className="circle-image-wrapper"
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                style={{
+    boxShadow: "0 20px 50px rgba(0, 0, 0, 0.35)",
+
+    borderRadius: "50%",
+  }}
               >
                 <img
-                  src="./logo1.png"
-                  alt="AABHARANAM Wardrobe"
+                  src="./logo.png"
+                  alt="Aabharanam Jewels"
                   className="circle-image"
                 />
               </motion.div>
 
-              {/* Animated Background Elements */}
-              <motion.div
-                className="animated-circle circle-1"
-                animate={{ rotate: 360 }}
-                transition={{ duration: 20, repeat: Infinity, linear: true }}
-              />
-              <motion.div
-                className="animated-circle circle-2"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 25, repeat: Infinity, linear: true }}
-              />
 
-              {/* Floating Elements */}
-              <motion.div
-                className="floating-element element-1"
-                animate={{ y: [0, -30, 0], x: [0, 15, 0] }}
-                transition={{ duration: 5, repeat: Infinity }}
-              >
-                <Heart className="w-6 h-6" />
-              </motion.div>
-              <motion.div
-                className="floating-element element-2"
-                animate={{ y: [0, 30, 0], x: [0, -15, 0] }}
-                transition={{ duration: 6, repeat: Infinity, delay: 1 }}
-              >
-                <Zap className="w-6 h-6" />
-              </motion.div>
-              <motion.div
-                className="floating-element element-3"
-                animate={{ y: [0, -25, 0] }}
-                transition={{ duration: 7, repeat: Infinity, delay: 2 }}
-              >
-                <Lightbulb className="w-6 h-6" />
-              </motion.div>
             </motion.div>
           </motion.div>
         </div>
@@ -292,22 +249,16 @@ export default function AboutUs() {
       >
         <motion.div className="section-header" variants={itemVariants}>
           <h2>Our Core Values</h2>
-          <p>What drives us every single day</p>
+          <p>The promise behind every piece we make</p>
         </motion.div>
 
-        <motion.div
-          className="values-grid"
-          variants={containerVariants}
-        >
+        <motion.div className="values-grid" variants={containerVariants}>
           {values.map((value, index) => (
             <motion.div
               key={index}
               className="value-card"
               variants={scaleIn}
-              whileHover={{
-                y: -10,
-                boxShadow: "0 20px 40px rgba(0, 0, 0, 0.1)",
-              }}
+              whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
               transition={{ duration: 0.3 }}
             >
               <motion.div
@@ -335,7 +286,7 @@ export default function AboutUs() {
         <div className="stats-background" />
         <motion.div className="section-header" variants={itemVariants}>
           <h2>By The Numbers</h2>
-          <p>Growing together with our community</p>
+          <p>A young brand growing with every order</p>
         </motion.div>
 
         <motion.div className="stats-grid" variants={containerVariants}>
@@ -349,7 +300,9 @@ export default function AboutUs() {
               <motion.div
                 className="stat-number"
                 initial={{ opacity: 0, y: 20 }}
-                animate={statsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                animate={
+                  statsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                }
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
                 {stat.number}
@@ -359,9 +312,6 @@ export default function AboutUs() {
           ))}
         </motion.div>
       </motion.section>
-
-      {/* Team Section */}
-     
 
       {/* Timeline Section */}
       <motion.section
@@ -373,17 +323,11 @@ export default function AboutUs() {
       >
         <motion.div className="section-header" variants={itemVariants}>
           <h2>Our Journey</h2>
-          <p>From passion to profession</p>
+          <p>From a single dream to thousands of smiles</p>
         </motion.div>
 
         <motion.div className="timeline" variants={containerVariants}>
-          {[
-            { year: "2009", title: "Founded", desc: "AABHARANAM Wardrobe was born with a simple vision" },
-            { year: "2012", title: "First Store", desc: "Opened our flagship store in New York" },
-            { year: "2016", title: "Online Launch", desc: "Expanded to digital marketplace" },
-            { year: "2020", title: "Global Reach", desc: "Now serving customers in 100+ cities" },
-            { year: "2024", title: "Innovation Hub", desc: "Launched AI-powered personal styling" },
-          ].map((item, index) => (
+          {timeline.map((item, index) => (
             <motion.div
               key={index}
               className="timeline-item"
@@ -413,24 +357,14 @@ export default function AboutUs() {
         variants={containerVariants}
       >
         <motion.div className="cta-content" variants={itemVariants}>
-          <h2>Ready to Discover Your Style?</h2>
+          <h2>Wear Gold. Every Day.</h2>
           <p>
-            Join thousands of fashion enthusiasts who've transformed their wardrobe with AABHARANAM
+            Join thousands of women who've discovered the joy of lightweight, affordable
+            gold jewellery — crafted with love at Aabharanam Jewels.
           </p>
-          <motion.button
-            className="cta-button-large"
-            whileHover={{
-              scale: 1.08,
-              boxShadow: "0 30px 60px rgba(0, 0, 0, 0.2)",
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Start Shopping Now
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
+
         </motion.div>
 
-        {/* Animated Background Elements */}
         <motion.div
           className="cta-bg-element element-1"
           animate={{ rotate: 360 }}

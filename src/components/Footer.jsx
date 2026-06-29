@@ -141,7 +141,7 @@ export default function Footer() {
 
               <li className="text-gray-600 flex items-center text-sm">
                 <MapPin className="w-5 h-5 mr-2 text-gray-400" />
-                <span>New Delhi, India</span>
+                <span>Patelguda, Hyderabad, Telangana</span>
               </li>
 
               <li>
@@ -156,11 +156,11 @@ export default function Footer() {
 
               <li>
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+91 6281022771"
                   className="relative text-gray-600 hover:text-black text-sm flex items-center after:absolute after:left-7 after:-bottom-1 after:h-[1px] after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-[60%]"
                 >
                   <Phone className="w-5 h-5 mr-2 text-gray-400" />
-                  +91 98765 43210
+                  +91 6281022771
                 </a>
               </li>
 

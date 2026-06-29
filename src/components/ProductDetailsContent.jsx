@@ -153,24 +153,30 @@ export default function ProductDetailsContent({ product }) {
             </div>
 
             {/* Price box */}
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100/40 rounded-xl p-4">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="text-2xl sm:text-3xl font-extrabold text-red-500">
-                  ₹{finalPrice.toLocaleString()}
-                </span>
-                {discount > 0 && (
-                  <>
-                    <span className="text-base text-gray-400 line-through">
-                      ₹{product.price.toLocaleString()}
-                    </span>
-                    <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
-                      {discount}% OFF
-                    </span>
-                  </>
-                )}
-              </div>
-              <p className="text-xs text-gray-500">inclusive of all taxes</p>
-            </div>
+            {/* Luxury Price Box */}
+<div className="bg-gradient-to-br from-[#121212] via-[#1b1b1b] to-[#2a2a2a] border border-[#C9A227]/40 rounded-xl p-5 shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+  <div className="flex flex-wrap items-center gap-3 mb-2">
+    <span className="text-3xl font-extrabold text-[#D4AF37] tracking-tight">
+      ₹{finalPrice.toLocaleString()}
+    </span>
+
+    {discount > 0 && (
+      <>
+        <span className="text-base text-gray-500 line-through">
+          ₹{product.price.toLocaleString()}
+        </span>
+
+        <span className="bg-[#C9A227] text-black text-xs font-bold px-3 py-1 rounded-full shadow-md">
+          {discount}% OFF
+        </span>
+      </>
+    )}
+  </div>
+
+  <p className="text-xs text-gray-300 tracking-wide">
+    Inclusive of all taxes
+  </p>
+</div>
 
             {/* Stock status */}
             <div className="flex items-center gap-2 flex-wrap">
@@ -216,11 +222,11 @@ export default function ProductDetailsContent({ product }) {
             </div>
 
             {/* Description */}
-            <div className="bg-gray-50/80 rounded-xl p-4">
+            <div className="bg-black-50/80 rounded-xl p-4 font-mediumt">
               <h3 className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 border-b border-gray-200 pb-2">
                 Description
               </h3>
-              <p className="text-sm text-gray-600 leading-relaxed break-words whitespace-pre-line">
+              <p className="text-sm text-black-600 leading-relaxed break-words whitespace-pre-line">
                 {product.description}
               </p>
             </div>

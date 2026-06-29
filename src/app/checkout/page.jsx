@@ -43,12 +43,12 @@ const styles = `
     font-size: 0.72rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #bbb;
+    color: #000000;
     text-decoration: none;
     padding-bottom: 4px;
     transition: color 0.15s;
   }
-  .co-back:hover { color: #111; }
+  .co-back:hover { box-shadow: 0 5px 5px rgba(255, 247, 0, 0.05); }
 
   .co-body {
     max-width: 680px;
@@ -63,7 +63,7 @@ const styles = `
     gap: 6px;
     padding: 18px 0 0;
     font-size: 0.75rem;
-    color: #999;
+    color: #000000;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     border-bottom: 1px solid #ebebeb;
@@ -77,7 +77,8 @@ const styles = `
     font-size: 0.65rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #bbb;
+    color: #000000;
+    font-weight: 700;
     display: block;
     margin: 0 0 14px;
   }
@@ -88,9 +89,10 @@ const styles = `
   .co-label {
     display: block;
     font-size: 0.65rem;
+    font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #999;
+    color: #000000;
     margin-bottom: 6px;
   }
 
@@ -103,7 +105,7 @@ const styles = `
     border-radius: 0;
     font-family: 'Playfair Display', serif;
     font-size: 0.92rem;
-    color: #111;
+    color: #000000;
     background: #fff;
     outline: none;
     transition: border-color 0.15s;
@@ -145,7 +147,7 @@ const styles = `
   }
   .co-cod p {
     font-size: 0.78rem;
-    color: #888;
+    color: #000000;
     margin: 0;
     line-height: 1.6;
     font-weight: 400;
@@ -173,7 +175,7 @@ const styles = `
   }
   .co-btn:hover:not(:disabled) { background: #2a2a2a; }
   .co-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .co-btn-amt { opacity: 0.55; font-weight: 400; font-size: 0.75rem; }
+  .co-btn-amt {  font-weight: 400; font-size: 0.75rem; color: #e5b412; }
 
   /* error */
   .co-error {
@@ -455,11 +457,7 @@ console.log("Type:", typeof shippingAddress);
               />
             </div>
 
-            <div className="co-cod">
-              <div className="co-cod-dot" />
-              <p>Payment is collected on delivery. No card details required.</p>
-            </div>
-
+        
             <button
               type="submit"
               className="co-btn"

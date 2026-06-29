@@ -9,7 +9,7 @@ import FilterModal from "@/components/FilterModal";
 import { useQuery } from "@tanstack/react-query";
 import { publicApi } from "@/lib/apiClient";
 import { normalizePage } from "@/lib/pagination";
-
+import Recommendations from "@/components/Recommendations";
 function useDebouncedValue(value, delayMs) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -41,7 +41,11 @@ export default function ProductsPage() {
     const raw = categoriesQuery.data?.data ?? categoriesQuery.data;
     return Array.isArray(raw) ? raw : [];
   }, [categoriesQuery.data]);
-
+  const selectedCategory = useMemo(() => {
+  return categories.find(
+    (cat) => String(cat.id) === String(categoryId)
+  );
+}, [categories, categoryId]);
   const useSearchEndpoint =
     Boolean(categoryId) ||
     Boolean(debouncedQ) ||
@@ -100,12 +104,24 @@ export default function ProductsPage() {
         overlayText={{ part1: "Quality", part2: "Curated." }}
         locationText="Worldwide Shipping Available"
       />
-
+       <Recommendations
+    categories={categories}
+    onCategorySelect={(id) => {
+        setCategoryId(String(id));
+        setPage(0);
+    }}
+/>
       {/* ── Heading ── */}
       <div className="flex flex-col items-start px-4 sm:px-6 md:px-0 mt-6 mb-3">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-          All Products
-        </h2>
+        <motion.h2
+  key={selectedCategory?.id || "all-products"}
+  initial={{ opacity: 0, y: 8 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.25 }}
+  className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight"
+>
+  {selectedCategory?.name || "All Products"}
+</motion.h2>
         <div className="mt-2 w-12 h-[2px] bg-[#d4a574]" />
       </div>
 
