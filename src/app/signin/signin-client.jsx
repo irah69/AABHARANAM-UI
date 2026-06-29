@@ -64,7 +64,7 @@ export default function SignInClient() {
       </video>
 
       {/* Optional Overlay */}
-      <div className="fixed inset-0 bg-black/30 -z-10"></div>
+      {/* <div className="fixed inset-0 bg-black/30 -z-10"></div> */}
 
       {/* Signin Card */}
       <div className="relative w-full max-w-md p-6 sm:p-8 rounded-2xl shadow-xl">

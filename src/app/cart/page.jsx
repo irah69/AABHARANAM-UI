@@ -458,7 +458,13 @@ export default function CartPage() {
         <style>{styles}</style>
         <div className="cart-root">
           <div className="cart-unauth">
-            <div className="cart-unauth-icon">◻</div>
+<div className="flex justify-center items-center mb-8">
+  <img
+    src="/logo.png"
+    alt="Brand Logo"
+    className="h-48 w-48 md:h-60 md:w-60 lg:h-72 lg:w-72 object-contain drop-shadow-lg transition-transform duration-300 hover:scale-105"
+  />
+</div>
             <h1>Sign in to view your cart</h1>
             <p>Your saved items and checkout details will appear here once you sign in.</p>
             <div className="cart-unauth-actions">
@@ -470,7 +476,7 @@ export default function CartPage() {
               </Link>
             </div>
           </div>
-
+{/* 
           <div className="popular-section">
             <p className="popular-label">Popular right now</p>
             <div className="popular-grid">
@@ -481,7 +487,7 @@ export default function CartPage() {
                 </Link>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </>
     );

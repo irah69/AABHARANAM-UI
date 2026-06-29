@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-
+import Image from "next/image";
 const ContactUs = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -32,7 +32,18 @@ const ContactUs = () => {
   };
 
   return (
+    
     <section className="max-w-xl mx-auto mt-12 p-6">
+      <div className="flex justify-center mb-6">
+  <Image
+    src="/logo.png"
+    alt="AABHARANAM Logo"
+    width={180}
+    height={180}
+    className="object-contain drop-shadow-lg transition-transform duration-300 hover:scale-105"
+    priority
+  />
+</div>
       <h1 className="text-4xl font-extrabold text-black mb-6 text-center">Contact Us</h1>
       <p className="text-center text-gray-700 mb-8">
         We'd love to hear from you! Reach out to us for any questions, feedback, or support.
